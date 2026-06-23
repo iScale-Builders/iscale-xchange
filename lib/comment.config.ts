@@ -26,6 +26,7 @@ export const commentAuth = {
   // Accepts an optional request arg (ignored) so existing call sites that pass
   // `req` keep compiling; Clerk's auth() reads the request from async context.
   getSession: async (_request?: unknown) => {
+    void _request
     const { userId } = await clerkAuth()
     if (!userId) return null
     // Best-effort: guarantee a local `user` row exists for this Clerk user so

@@ -4,9 +4,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-import { RiExternalLinkLine } from "@remixicon/react"
-
-import { getProjectWebsiteRelAttribute } from "@/lib/link-utils"
 import { toolStatusLabel } from "@/lib/tool-status"
 
 import { ProjectCardButtons } from "./project-card-buttons"
@@ -48,13 +45,10 @@ export function ProjectCard({
   upvoteCount,
   commentCount,
   launchStatus,
-  launchType,
-  dailyRanking,
   index,
   userHasUpvoted,
   categories,
   isAuthenticated,
-  websiteUrl,
 }: ProjectCardProps) {
   const router = useRouter()
   const projectPageUrl = `/projects/${slug}`

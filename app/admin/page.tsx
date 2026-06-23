@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 
 import { format, parseISO } from "date-fns"
 import {
@@ -117,7 +116,6 @@ export default function AdminDashboard() {
   const [newCategory, setNewCategory] = useState("")
   const [isAddingCategory, setIsAddingCategory] = useState(false)
   const [categoryError, setCategoryError] = useState<string | null>(null)
-  const router = useRouter()
   useIsMobile()
 
   // Fetch users, stats and free launch availability
@@ -384,7 +382,9 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2">
             <Inbox className="text-muted-foreground h-4 w-4" />
             <h2 className="text-sm font-medium">Submissions</h2>
-            <span className="text-muted-foreground text-xs">({pendingProjects.length} pending)</span>
+            <span className="text-muted-foreground text-xs">
+              ({pendingProjects.length} pending)
+            </span>
           </div>
           <Button
             size="sm"
@@ -635,7 +635,6 @@ export default function AdminDashboard() {
                           <DropdownMenuUserActions
                             user={user}
                             onRefresh={fetchData}
-                            router={router}
                             setIsLoading={setIsLoading}
                             isLoading={isLoading}
                           />
@@ -689,7 +688,6 @@ export default function AdminDashboard() {
                   <DropdownMenuUserActions
                     user={user}
                     onRefresh={fetchData}
-                    router={router}
                     setIsLoading={setIsLoading}
                     isLoading={isLoading}
                   />
@@ -795,13 +793,11 @@ export default function AdminDashboard() {
 function DropdownMenuUserActions({
   user,
   onRefresh,
-  router,
   setIsLoading,
   isLoading,
 }: {
   user: User
   onRefresh: () => Promise<void>
-  router: any // eslint-disable-line @typescript-eslint/no-explicit-any
   setIsLoading: (value: string | undefined) => void
   isLoading: string | undefined
 }) {

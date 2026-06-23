@@ -84,7 +84,7 @@ export async function sendLaunchReminderEmail({
   const effectiveUserName = user.name || "Creator"
   const effectiveUserEmail = user.email
 
-  const subject = `🚀 ${projectName} is Live on iScaleBuilders!`
+  const subject = `🚀 ${projectName} is Available on iScaleBuilders!`
   const projectUrl = `${APP_URL}/projects/${projectSlug}`
 
   const htmlBody = `
@@ -92,7 +92,7 @@ export async function sendLaunchReminderEmail({
       <h1 style="font-size: 22px; color: #1a1a1a;">Hi ${effectiveUserName},</h1>
       <p>Just a quick heads-up: your project, <strong>${projectName}</strong>, is launching today on iScaleBuilders!</p>
       <p>We hope you had a great launch day!</p>
-      <p>You can view your project live here: <a href="${projectUrl}">${projectUrl}</a></p> 
+      <p>You can view your available project here: <a href="${projectUrl}">${projectUrl}</a></p> 
       <p style="margin-top: 25px;">Best of luck!</p>
       <p>The iScaleBuilders Team</p>
     </div>

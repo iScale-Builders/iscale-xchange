@@ -94,9 +94,8 @@ export function SubmitProjectForm({ userId }: SubmitProjectFormProps) {
   })
 
   const [uploadedLogoUrl, setUploadedLogoUrl] = useState<string | null>(null)
-
-  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
-  const [isUploadingProductImage, setIsUploadingProductImage] = useState(false)
+  const isUploadingLogo = false
+  const isUploadingProductImage = false
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
   const [isLoadingCategories, setIsLoadingCategories] = useState(false)

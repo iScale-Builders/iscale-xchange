@@ -113,7 +113,7 @@ export function RichTextEditor({
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => (editor.chain().focus() as any).toggleBold().run()}
+          onClick={() => editor.chain().focus().toggleBold().run()}
           className={cn("h-8 px-2", editor.isActive("bold") && "bg-muted")}
         >
           <RiBold className="h-4 w-4" />
@@ -123,7 +123,7 @@ export function RichTextEditor({
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => (editor.chain().focus() as any).toggleItalic().run()}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
           className={cn("h-8 px-2", editor.isActive("italic") && "bg-muted")}
         >
           <RiItalic className="h-4 w-4" />

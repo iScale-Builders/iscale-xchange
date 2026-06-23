@@ -165,14 +165,14 @@ export default async function TrendingPage({
           <div className="top-24">
             {/* Quick Stats */}
             <div className="foundry-panel space-y-3 rounded-2xl p-5">
-              <h3 className="flex items-center gap-2 font-semibold">Live Now</h3>
+              <h3 className="flex items-center gap-2 font-semibold">Testing Now</h3>
               <Link
                 href="/trending"
                 className="bg-card hover:bg-muted/40 block rounded-xl border border-cyan-100/16 px-5 py-3 transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <div className="text-primary text-2xl font-bold">{ongoingLaunches}</div>
-                  <div className="text-sm font-medium">Active Launches</div>
+                  <div className="text-sm font-medium">Tools in testing</div>
                 </div>
               </Link>
             </div>
