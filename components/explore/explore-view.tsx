@@ -14,67 +14,8 @@ export function thumbnailFor(productImage: string | null, coverImageUrl: string 
   return productImage || coverImageUrl
 }
 
-const ownedToolGalleries: Record<string, string[]> = {
-  "amazon-ads-control": [
-    "/images/apps/gallery/amazon-ads-control-1.png",
-    "/images/apps/gallery/amazon-ads-control-2.png",
-    "/images/apps/gallery/amazon-ads-control-3.png",
-  ],
-  automerch: [
-    "/images/apps/gallery/automerch-1.png",
-    "/images/apps/gallery/automerch-2.png",
-    "/images/apps/gallery/automerch-3.png",
-  ],
-  "design-library-team": [
-    "/images/apps/gallery/design-library-team-1.png",
-    "/images/apps/gallery/design-library-team-2.png",
-    "/images/apps/gallery/design-library-team-3.png",
-  ],
-  "iscale-builders": [
-    "/images/apps/gallery/iscale-builders-1.png",
-    "/images/apps/gallery/iscale-builders-2.png",
-    "/images/apps/gallery/iscale-builders-3.png",
-  ],
-  "iscale-etsy": [
-    "/images/apps/gallery/iscale-etsy-1.png",
-    "/images/apps/gallery/iscale-etsy-2.png",
-    "/images/apps/gallery/iscale-etsy-3.png",
-  ],
-  "iscale-images": [
-    "/images/apps/iscale-images-1.png",
-    "/images/apps/iscale-images-2.png",
-    "/images/apps/iscale-images-3.png",
-  ],
-  "iscale-keywords": [
-    "/images/apps/gallery/iscale-keywords-1.png",
-    "/images/apps/gallery/iscale-keywords-2.png",
-    "/images/apps/gallery/iscale-keywords-3.png",
-  ],
-  "iscale-listings": [
-    "/images/apps/gallery/iscale-listings-1.png",
-    "/images/apps/gallery/iscale-listings-2.png",
-    "/images/apps/gallery/iscale-listings-3.png",
-  ],
-  "iscale-merch": [
-    "/images/apps/gallery/iscale-merch-1.png",
-    "/images/apps/gallery/iscale-merch-2.png",
-    "/images/apps/gallery/iscale-merch-3.png",
-  ],
-  pintwist: [
-    "/images/apps/gallery/pintwist-1.png",
-    "/images/apps/gallery/pintwist-2.png",
-    "/images/apps/gallery/pintwist-3.png",
-  ],
-  promoteflow: [
-    "/images/apps/gallery/promoteflow-1.png",
-    "/images/apps/gallery/promoteflow-2.png",
-    "/images/apps/gallery/promoteflow-3.png",
-  ],
-}
-
 // Distinct images for a tool, in display order, for the per-card image cycler.
 export function galleryFor(p: {
-  slug?: string | null
   galleryImages?: string[] | null
   productImage?: string | null
   coverImageUrl?: string | null
@@ -82,7 +23,6 @@ export function galleryFor(p: {
 }): string[] {
   const savedGallery = p.galleryImages?.filter((x) => x && x.trim().length > 0).slice(0, 10)
   if (savedGallery?.length) return Array.from(new Set(savedGallery))
-  if (p.slug && ownedToolGalleries[p.slug]) return ownedToolGalleries[p.slug]
 
   return Array.from(
     new Set(
