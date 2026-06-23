@@ -4,6 +4,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+import { toolStatusLabel } from "@/lib/tool-status"
 import { CardImageCycler } from "@/components/explore/card-image-cycler"
 import { UpvoteButton } from "@/components/project/upvote-button"
 
@@ -24,12 +25,6 @@ interface ExploreTrendingCardProps {
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim()
-}
-
-function statusLabel(status: string): string {
-  if (status === "scheduled") return "Coming soon"
-  if (status === "ongoing") return "Live"
-  return "Available"
 }
 
 export function ExploreTrendingCard({
@@ -57,7 +52,7 @@ export function ExploreTrendingCard({
       <div className="bg-muted relative aspect-[16/9] w-full overflow-hidden">
         <CardImageCycler images={images} name={name} category={category} slug={slug} compact />
         <div className="border-border bg-background/80 text-muted-foreground absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[11px] font-semibold backdrop-blur">
-          {statusLabel(launchStatus)}
+          {toolStatusLabel(launchStatus)}
         </div>
         {/* Upvote (works for coming-soon too) */}
         <UpvoteButton

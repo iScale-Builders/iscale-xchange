@@ -4,6 +4,7 @@ import Link from "next/link"
 
 import { RiArrowRightLine, RiFireLine, RiMessage2Line, RiThumbUpFill } from "@remixicon/react"
 
+import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
 import { ExploreGridCard } from "@/components/explore/explore-grid-card"
 import { ExploreTrendingCard } from "@/components/explore/explore-trending-card"
@@ -100,9 +101,14 @@ export function ExploreView({ projects, isAuthenticated = false }: ExploreViewPr
                   className="transition-transform duration-700 group-hover:scale-105"
                 />
               )}
-              <div className="border-border bg-muted text-foreground absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-black shadow-[0_0_24px_rgb(0_229_255_/_0.22)] backdrop-blur-xl">
-                <RiFireLine className="h-3.5 w-3.5" />
-                Top tool
+              <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                <span className="border-border bg-muted text-foreground inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-black shadow-[0_0_24px_rgb(0_229_255_/_0.22)] backdrop-blur-xl">
+                  <RiFireLine className="h-3.5 w-3.5" />
+                  Top tool
+                </span>
+                <span className="border-border bg-muted text-foreground rounded-full border px-3 py-1 text-xs font-black shadow-[0_0_24px_rgb(0_229_255_/_0.22)] backdrop-blur-xl">
+                  {toolStatusLabel(featured.launchStatus)}
+                </span>
               </div>
             </div>
 

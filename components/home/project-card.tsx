@@ -7,18 +7,13 @@ import { useRouter } from "next/navigation"
 import { RiExternalLinkLine } from "@remixicon/react"
 
 import { getProjectWebsiteRelAttribute } from "@/lib/link-utils"
+import { toolStatusLabel } from "@/lib/tool-status"
 
 import { ProjectCardButtons } from "./project-card-buttons"
 
 // Function to strip HTML tags from text
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim()
-}
-
-function statusLabel(status: string): string {
-  if (status === "scheduled") return "Coming soon"
-  if (status === "ongoing") return "Live"
-  return "Available"
 }
 
 interface Category {
@@ -104,7 +99,7 @@ export function ProjectCard({
                 </h3>
               </Link>
               <span className="border-border bg-muted text-foreground rounded-full border px-2 py-0.5 text-[10px] font-black">
-                {statusLabel(launchStatus)}
+                {toolStatusLabel(launchStatus)}
               </span>
             </div>
 

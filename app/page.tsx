@@ -45,6 +45,7 @@ export default async function Home() {
     name: p.name,
     description: p.description,
     images: galleryFor(p),
+    launchStatus: p.launchStatus,
     category: p.categories[0]?.name,
     creatorName: p.creatorName,
     creatorImage: p.creatorImage,
