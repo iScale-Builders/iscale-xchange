@@ -157,7 +157,7 @@ async function seed() {
     description: app.description,
     websiteUrl: app.websiteUrl,
     logoUrl: app.logoUrl,
-    coverImageUrl: app.productImage,
+    coverImageUrl: app.coverImage ?? app.productImage,
     productImage: app.productImage,
     githubUrl: app.githubUrl,
     twitterUrl: null,

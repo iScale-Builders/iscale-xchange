@@ -5,6 +5,7 @@ export interface IScaleLabsAppSeed {
   description: string
   websiteUrl: string
   productImage: string
+  coverImage?: string
   logoUrl: string
   githubUrl?: string
   techStack: string[]
@@ -69,8 +70,9 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     description:
       "iScale Merch is the Merch by Amazon command lane for POD operators: research, listing strategy, Chrome extension workflows, and the future bridge between product data and execution.",
     websiteUrl: listingUrl("iscale-merch"),
-    productImage: realAsset("iscale-merch-watchlist.png"),
-    logoUrl: realAsset("iscale-merch-icon-128.png"),
+    productImage: "/images/apps/iscalemerch-1.webp",
+    coverImage: "/images/apps/iscalemerch-2.webp",
+    logoUrl: "/images/apps/iscalemerch-3.webp",
     techStack: ["Chrome Extension", "Amazon Merch", "Next.js"],
     pricing: "freemium",
     platforms: ["web"],
