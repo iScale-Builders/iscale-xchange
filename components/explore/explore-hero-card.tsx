@@ -1,10 +1,12 @@
 "use client"
 
 /* eslint-disable @next/next/no-img-element */
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import { RiArrowRightLine, RiChat3Line, RiFireLine, RiThumbUpLine } from "@remixicon/react"
 
+import { subscribeTick } from "@/lib/sync-tick"
 import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 
 function stripHtml(html: string): string {
@@ -40,35 +42,57 @@ export function ExploreHeroCard({
 }: ExploreHeroCardProps) {
   const router = useRouter()
   const url = `/projects/${slug}`
-  const img = images[0]
+  const [imageIndex, setImageIndex] = useState(0)
+  const activeIndex = imageIndex % Math.max(images.length, 1)
+
+  useEffect(() => {
+    if (images.length < 2) return
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return
+    }
+    return subscribeTick(() => setImageIndex((prev) => (prev + 1) % images.length))
+  }, [images.length])
 
   return (
     <article
       onClick={() => router.push(url)}
       className={`group relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-neutral-900 ${heightClassName}`}
     >
-      {img ? (
+      {images.length > 0 ? (
         <>
-          {/* blurred fill so the sides aren't flat-empty (decorative — low priority
-              so it doesn't steal bandwidth from the LCP image) */}
-          <img
-            src={img}
-            alt=""
-            aria-hidden="true"
-            fetchPriority="low"
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
-          />
-          <div className="absolute inset-4 overflow-hidden rounded-xl border border-white/15 bg-black/25 shadow-2xl sm:inset-6">
-            {/* the WHOLE thumbnail, never cropped. This is the hero LCP element —
-                eager + high fetch priority so it paints fast. */}
-            <img
-              src={img}
-              alt={name}
-              loading="eager"
-              fetchPriority="high"
-              className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-            />
-          </div>
+          {images.map((src, index) => {
+            const active = index === activeIndex
+
+            return (
+              <div
+                key={`${src}-${index}`}
+                aria-hidden={!active}
+                className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${
+                  active ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  aria-hidden="true"
+                  fetchPriority="low"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
+                />
+                <div className="absolute inset-4 overflow-hidden rounded-xl border border-white/15 bg-black/25 shadow-2xl sm:inset-6">
+                  <img
+                    src={src}
+                    alt={active ? name : ""}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                </div>
+              </div>
+            )
+          })}
         </>
       ) : (
         <ToolThumbnail
