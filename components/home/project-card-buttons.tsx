@@ -56,9 +56,9 @@ export function ProjectCardButtons({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl border-2 border-dashed">
+              <div className="flex h-12 min-w-12 items-center justify-center gap-1.5 rounded-xl border-2 border-dashed px-3">
                 <RiThumbUpLine className="h-3.5 w-3.5 text-gray-700 dark:text-gray-300" />
-                <span className="mt-1 text-sm leading-none font-semibold text-gray-700 dark:text-gray-300">
+                <span className="text-sm leading-none font-semibold text-gray-700 dark:text-gray-300">
                   {upvoteCount}
                 </span>
               </div>
