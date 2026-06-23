@@ -128,8 +128,9 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     description:
       "iScale Images is the image-generation and asset pipeline for POD: prompt queues, transparent cleanup, variation systems, and product-ready image operations.",
     websiteUrl: listingUrl("iscale-images"),
-    productImage: thumbnail("iscale-images"),
-    logoUrl: thumbnail("iscale-images"),
+    productImage: "/images/apps/iscale-images-1.png",
+    coverImage: "/images/apps/iscale-images-2.png",
+    logoUrl: "/images/apps/iscale-images-3.png",
     techStack: ["Image Generation", "Automation", "Asset Pipeline"],
     pricing: "freemium",
     platforms: ["web"],
