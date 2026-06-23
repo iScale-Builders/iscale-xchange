@@ -15,7 +15,7 @@ import {
   RiUserAddLine,
 } from "@remixicon/react"
 
-import { getLocalUser } from "@/lib/ensure-user"
+import { ensureLocalUser } from "@/lib/ensure-user"
 import {
   Sheet,
   SheetClose,
@@ -34,9 +34,14 @@ import { UserNav } from "./user-nav"
 
 export default async function Nav() {
   const { userId } = await auth()
-  // Keep global navigation read-only. Public pages should not crash because a
-  // signed-in profile write/upsert failed; write paths call ensureLocalUser().
-  const localUser = userId ? await getLocalUser(userId) : null
+  let localUser = null
+  if (userId) {
+    try {
+      localUser = await ensureLocalUser()
+    } catch (error) {
+      console.error("Failed to sync local user in nav:", error)
+    }
+  }
   const session = Boolean(userId)
   const user = localUser
     ? {
