@@ -1,95 +1,109 @@
 # Contributing to iScaleBuilders
 
-Thank you for your interest in contributing to iScaleBuilders. This document provides guidelines and instructions for contributing to the project.
+Thank you for considering a contribution. iScaleBuilders is open source, but it
+is maintainer-led: contributions are welcome when they fit the product direction,
+quality bar, license obligations, and public-repo safety rules.
 
-## 🤝 Code of Conduct
+## Before You Start
 
-Please be respectful and considerate of others. We follow the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+Open an issue before starting work when the change is large, changes product
+direction, changes public UI patterns, affects licensing/branding, changes
+database schema, or adds a dependency.
 
-## 🚀 Getting Started
+Small fixes can go straight to a pull request.
 
-1. Fork the repository
-2. Clone your fork:
-   ```bash
-   git clone https://github.com/your-username/iscale-builders.git
-   cd iscale-builders
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+## Contribution Terms
 
-## 📝 Pull Request Process
+By contributing, you confirm that:
 
-1. Ensure your code follows our coding standards
-2. Update the documentation if necessary
-3. Add tests for new features or bug fixes
-4. Ensure all tests pass
-5. Submit a pull request with a clear description of changes
+- you have the right to submit the contribution;
+- your contribution is submitted under this repository's license;
+- your contribution does not include secrets, private data, or code copied from
+  a source that cannot be redistributed here;
+- you understand that maintainers may edit, reject, or close contributions that
+  do not fit the project.
 
-## 🧪 Testing
+We use Developer Certificate of Origin style sign-off. Please sign commits with:
 
-Before submitting a pull request, please ensure:
+```bash
+git commit -s -m "Describe the change"
+```
 
-1. All tests pass:
-   ```bash
-   npm test
-   ```
-2. Linting passes:
-   ```bash
-   npm run lint
-   ```
+## Local Setup
 
-## 📚 Documentation
+```bash
+git clone https://github.com/iScale-Builders/iscale-builders.git
+cd iscale-builders
+npm install --legacy-peer-deps
+cp .env.example .env
+npm run dev
+```
 
-- Update README.md if necessary
-- Add comments to complex code sections
-- Document new features in the appropriate documentation files
+Clerk, Postgres, and Redis are required for authenticated submissions, voting,
+comments, and admin workflows. Public builds are allowed to compile without a
+local database connection; in that case generated static lists fall back to
+empty lists instead of mock product data.
 
-## 🐛 Reporting Bugs
+## Required Checks
 
-When reporting bugs, please include:
+Before opening a pull request, run:
 
-1. A clear description of the bug
-2. Steps to reproduce
-3. Expected behavior
-4. Actual behavior
-5. Screenshots if applicable
-6. Environment details (OS, browser, etc.)
+```bash
+npm run build
+node node_modules/typescript/bin/tsc --noEmit
+npm audit
+```
 
-## 💡 Feature Requests
+Do not add a check to the pull request description unless it actually passed.
 
-For feature requests:
+## Product And UI Standards
 
-1. Describe the feature in detail
-2. Explain why it would be valuable
-3. Provide examples if possible
+- Keep the existing visual system and interaction patterns unless the issue or
+  pull request explicitly proposes a design change.
+- Do not add mock/fake product data as live product truth.
+- Do not reintroduce paid pricing or payment routes without maintainer approval.
+- Keep comments available on coming-soon listings unless a maintainer approves a
+  change.
+- Keep public browsing/search/listing pages usable without authentication.
+- Make mobile and desktop layouts readable, non-overlapping, and consistent with
+  the existing app.
 
-## 🏷️ Commit Messages
+## Safety Rules
 
-Please follow these guidelines for commit messages:
+Do not commit:
 
-- Use present tense ("Add feature" not "Added feature")
-- Use imperative mood ("Move cursor to..." not "Moves cursor to...")
-- Limit the first line to 72 characters or less
-- Reference issues and pull requests after the first line
+- `.env` files, tokens, credentials, or real secrets;
+- `.vercel`, local runtime state, logs, or machine-specific config;
+- `AGENTS.md`, `CLAUDE.md`, `ROUTER.md`, `memory/`, `tasks/`, or private
+  workspace/agent bridge files;
+- private iScaleLabs planning docs, production data, screenshots with private
+  data, or internal operating process.
 
-## 📦 Release Process
+## License And Attribution
 
-1. Update version numbers
-2. Update CHANGELOG.md
-3. Create a new release on GitHub
-4. Tag the release
+This project is currently distributed under the Open-Launch License. The
+required Open-Launch attribution must remain intact.
 
-## 🤝 Questions?
+iScaleLabs and iScaleBuilders names, logos, domains, and brand assets are not
+licensed for reuse just because the code is public. See `NOTICE.md` and
+`TRADEMARKS.md`.
 
-Feel free to:
+## Pull Request Expectations
 
-- Open an issue
-- Contact the maintainers
+Pull requests should include:
 
-Thank you for contributing to iScaleBuilders!
+- a clear summary;
+- why the change is needed;
+- screenshots or screen recordings for UI changes;
+- the checks you ran;
+- any risks, migrations, or follow-up work.
+
+Maintainers may request changes, squash commits, edit wording, or close pull
+requests that are stale, unsafe, too broad, off-direction, or not worth the
+maintenance cost.
+
+## Reporting Bugs And Security Issues
+
+Use GitHub issues for normal bugs and feature requests.
+
+Report security issues privately by following `SECURITY.md`.
