@@ -83,7 +83,7 @@ export function UpvoteButton({
         onClick={handleUpvote}
         disabled={isPending}
         className={cn(
-          "hover:border-primary dark:hover:border-primary flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-xl border-2 transition-all duration-300",
+          "hover:border-primary dark:hover:border-primary flex h-12 min-w-12 cursor-pointer items-center justify-center gap-1.5 rounded-xl border-2 px-3 transition-all duration-300",
           optimisticState.upvoted && "border-primary",
           className,
         )}
@@ -95,7 +95,7 @@ export function UpvoteButton({
         )}
         <span
           className={cn(
-            "mt-1 text-sm leading-none font-semibold",
+            "text-sm leading-none font-semibold",
             optimisticState.upvoted ? "text-primary" : "text-gray-700 dark:text-gray-300",
           )}
         >
