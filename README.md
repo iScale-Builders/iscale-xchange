@@ -73,11 +73,24 @@ production.
 
 ## Contributing
 
-Contributions are welcome once the public repo is open. See
-[CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome when they fit the project direction, quality bar,
+license obligations, and public-repo safety rules. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md), and
+[SUPPORT.md](SUPPORT.md).
+
+Large changes should begin as an issue before implementation. Maintainers are
+not obligated to merge changes that are off-direction, unsafe, too broad, or not
+worth the long-term maintenance cost.
 
 ## License
 
 This project is distributed under the Open-Launch License. See [LICENSE](LICENSE)
 for details. The license requires visible dofollow attribution to
 [Open-Launch](https://open-launch.com).
+
+Additional notices and brand-use rules are documented in [NOTICE.md](NOTICE.md)
+and [TRADEMARKS.md](TRADEMARKS.md). The iScaleLabs and iScaleBuilders names,
+logos, domains, and brand assets are not licensed for unrestricted reuse.
+
+Security reports should follow [SECURITY.md](SECURITY.md). Community behavior is
+governed by [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
