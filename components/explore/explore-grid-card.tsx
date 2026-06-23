@@ -64,7 +64,7 @@ export function ExploreGridCard({
       className="foundry-card ai-tool-card group flex cursor-pointer flex-col overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1"
     >
       {/* Thumbnail */}
-      <div className="bg-muted relative aspect-[16/10] w-full overflow-hidden">
+      <div className="bg-muted relative aspect-video w-full overflow-hidden">
         <CardImageCycler
           images={images}
           name={name}

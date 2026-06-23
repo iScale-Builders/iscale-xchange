@@ -58,15 +58,17 @@ export function ExploreHeroCard({
             fetchPriority="low"
             className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
           />
-          {/* the WHOLE thumbnail, never cropped. This is the hero LCP element —
-              eager + high fetch priority so it paints fast. */}
-          <img
-            src={img}
-            alt={name}
-            loading="eager"
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-          />
+          <div className="absolute inset-4 overflow-hidden rounded-xl border border-white/15 bg-black/25 shadow-2xl sm:inset-6">
+            {/* the WHOLE thumbnail, never cropped. This is the hero LCP element —
+                eager + high fetch priority so it paints fast. */}
+            <img
+              src={img}
+              alt={name}
+              loading="eager"
+              fetchPriority="high"
+              className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+          </div>
         </>
       ) : (
         <ToolThumbnail
