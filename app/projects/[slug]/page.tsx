@@ -11,6 +11,7 @@ import { format } from "date-fns"
 import { isUpvotingOpen } from "@/lib/launch-utils"
 import { breadcrumbSchema, softwareApplicationSchema } from "@/lib/seo/schema"
 import { slugify } from "@/lib/seo/slug"
+import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
 import { RichTextDisplay } from "@/components/ui/rich-text-editor"
 import { galleryFor, thumbnailFor } from "@/components/explore/explore-view"
@@ -99,12 +100,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const canUpvote = isUpvotingOpen(projectData.launchStatus)
   const isScheduled = projectData.launchStatus === "scheduled"
-  const statusLabel =
-    projectData.launchStatus === "scheduled"
-      ? "Coming soon"
-      : projectData.launchStatus === "ongoing"
-        ? "Live"
-        : "Available"
+  const statusLabel = toolStatusLabel(projectData.launchStatus)
 
   const isOwner = userId === projectData.createdBy
 

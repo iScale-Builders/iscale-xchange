@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { RiArrowRightLine, RiChat3Line, RiFireLine, RiThumbUpLine } from "@remixicon/react"
 
 import { subscribeTick } from "@/lib/sync-tick"
+import { toolStatusLabel } from "@/lib/tool-status"
 import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 
 function stripHtml(html: string): string {
@@ -18,6 +19,7 @@ interface ExploreHeroCardProps {
   name: string
   description: string
   images: string[]
+  launchStatus: string
   category?: string
   creatorName?: string | null
   creatorImage?: string | null
@@ -33,6 +35,7 @@ export function ExploreHeroCard({
   name,
   description,
   images,
+  launchStatus,
   category,
   creatorName,
   creatorImage,
@@ -112,6 +115,9 @@ export function ExploreHeroCard({
           <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
             <RiFireLine className="h-3 w-3" />
             Top tool
+          </span>
+          <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+            {toolStatusLabel(launchStatus)}
           </span>
           {category && (
             <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-medium text-white/90 backdrop-blur">

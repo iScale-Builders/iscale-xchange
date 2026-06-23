@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 
 import { RiArrowRightLine, RiFireLine, RiMessage2Line } from "@remixicon/react"
 
+import { toolStatusLabel } from "@/lib/tool-status"
 import { CardImageCycler } from "@/components/explore/card-image-cycler"
 import { UpvoteButton } from "@/components/project/upvote-button"
 
@@ -18,6 +19,7 @@ interface ExploreFeaturedCardProps {
   name: string
   description: string
   images: string[]
+  launchStatus: string
   category?: string
   creatorName?: string | null
   creatorImage?: string | null
@@ -34,6 +36,7 @@ export function ExploreFeaturedCard({
   name,
   description,
   images,
+  launchStatus,
   category,
   creatorName,
   creatorImage,
@@ -53,9 +56,14 @@ export function ExploreFeaturedCard({
     >
       <div className="bg-muted relative aspect-video w-full overflow-hidden">
         <CardImageCycler images={images} name={name} category={category} slug={slug} autoCycle />
-        <div className="border-border bg-background/80 text-foreground absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur">
-          <RiFireLine className="h-3.5 w-3.5" />
-          Top tool
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+          <span className="border-border bg-background/80 text-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur">
+            <RiFireLine className="h-3.5 w-3.5" />
+            Top tool
+          </span>
+          <span className="border-border bg-background/80 text-foreground rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur">
+            {toolStatusLabel(launchStatus)}
+          </span>
         </div>
       </div>
 

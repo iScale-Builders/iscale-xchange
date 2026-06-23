@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 
 import { RiArrowRightLine, RiChat3Line, RiFireLine } from "@remixicon/react"
 
+import { toolStatusLabel } from "@/lib/tool-status"
 import { CardImageCycler } from "@/components/explore/card-image-cycler"
 import { UpvoteButton } from "@/components/project/upvote-button"
 
@@ -18,6 +19,7 @@ interface ExploreWideCardProps {
   name: string
   description: string
   images: string[]
+  launchStatus: string
   category?: string
   creatorName?: string | null
   creatorImage?: string | null
@@ -35,6 +37,7 @@ export function ExploreWideCard({
   name,
   description,
   images,
+  launchStatus,
   category,
   creatorName,
   creatorImage,
@@ -57,7 +60,7 @@ export function ExploreWideCard({
         <div className="bg-muted relative aspect-video w-full overflow-hidden">
           <CardImageCycler images={images} name={name} category={category} slug={slug} autoCycle />
           <div className="border-border bg-background/80 text-muted-foreground absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[11px] font-semibold backdrop-blur">
-            Coming soon
+            {toolStatusLabel(launchStatus)}
           </div>
         </div>
         <div className="bg-muted/30 flex flex-1 flex-col gap-1 p-3">
