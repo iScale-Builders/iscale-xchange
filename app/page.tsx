@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 import { auth } from "@clerk/nextjs/server"
-import { RiArrowRightLine, RiSearchEyeLine } from "@remixicon/react"
+import { RiArrowRightLine } from "@remixicon/react"
 
 import { Button } from "@/components/ui/button"
 import { ExploreBrowser } from "@/components/explore/explore-browser"
@@ -24,22 +24,18 @@ export default async function Home() {
   const { userId } = await auth()
   const isAuthenticated = !!userId
 
-  const featuredToolSlugs = ["promoteflow"]
-  const availableToolSlugs = ["pintwist", "iscale-images", "iscale-etsy", "iscale-merch"]
-  const top3 = featuredToolSlugs
+  // One condensed featured rail: pinned launches first, then most-discussed.
+  const pinnedSlugs = ["promoteflow", "pintwist", "iscale-images", "iscale-etsy", "iscale-merch"]
+  const pinned = pinnedSlugs
     .map((slug) => projects.find((p) => p.slug === slug))
     .filter((p): p is ExploreProject => Boolean(p))
-  const top3Ids = new Set(top3.map((p) => p.id))
-  const pinnedAvailableTools = availableToolSlugs
-    .map((slug) => projects.find((p) => p.slug === slug))
-    .filter((p): p is ExploreProject => Boolean(p))
-  const pinnedAvailableToolIds = new Set(pinnedAvailableTools.map((p) => p.id))
-  const discussed = [
-    ...pinnedAvailableTools,
+  const pinnedIds = new Set(pinned.map((p) => p.id))
+  const featured = [
+    ...pinned,
     ...projects
-      .filter((p) => !top3Ids.has(p.id) && !pinnedAvailableToolIds.has(p.id))
+      .filter((p) => !pinnedIds.has(p.id))
       .sort((a, b) => b.commentCount - a.commentCount),
-  ].slice(0, 10)
+  ].slice(0, 8)
 
   const heroProps = (p: ExploreProject) => ({
     slug: p.slug,
@@ -57,8 +53,8 @@ export default async function Home() {
   return (
     <main className="bg-background text-foreground min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* Headline */}
-        <section className="mb-8 text-center">
+        {/* Hero — headline + the problem/solution split, all condensed at the top */}
+        <section className="mx-auto mb-12 max-w-3xl text-center">
           <p className="text-muted-foreground text-xs font-bold tracking-[0.22em] uppercase">
             iScaleXchange
           </p>
@@ -67,114 +63,65 @@ export default async function Home() {
           </h1>
           <p className="text-muted-foreground mx-auto mt-4 max-w-xl text-base leading-7">
             A living exchange where people surface what they cannot solve, vote on what matters, and
-            connect tools, workflows, and guides to the problems they fix.
+            connect the tools, workflows, and guides that fix it.
           </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <span className="border-border bg-muted text-foreground rounded-full border px-3 py-1 text-xs font-black tracking-[0.14em] uppercase">
-              Problem
-            </span>
-            <span className="border-border bg-muted text-foreground rounded-full border px-3 py-1 text-xs font-black tracking-[0.14em] uppercase">
-              Solution
-            </span>
-            <span className="border-border bg-muted text-foreground rounded-full border px-3 py-1 text-xs font-black tracking-[0.14em] uppercase">
-              Tool
-            </span>
+
+          {/* The two sides of the exchange, side by side */}
+          <div className="mx-auto mt-7 grid max-w-2xl gap-3 sm:grid-cols-2">
+            <Link
+              href="/problems"
+              prefetch={false}
+              className="foundry-panel group rounded-2xl p-4 text-left transition-all hover:-translate-y-0.5"
+            >
+              <div className="flex items-center justify-between">
+                <span className="border-border bg-muted text-foreground inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black tracking-[0.14em] uppercase">
+                  Problems
+                </span>
+                <RiArrowRightLine className="text-muted-foreground h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </div>
+              <p className="text-foreground mt-3 text-base font-black">What needs solving?</p>
+              <p className="text-muted-foreground mt-1 text-xs leading-5">
+                Pain points and blockers people vote up.
+              </p>
+            </Link>
+
+            <Link
+              href="/solutions"
+              prefetch={false}
+              className="foundry-panel group rounded-2xl p-4 text-left transition-all hover:-translate-y-0.5"
+            >
+              <div className="flex items-center justify-between">
+                <span className="border-border bg-muted text-foreground inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black tracking-[0.14em] uppercase">
+                  Solutions
+                </span>
+                <RiArrowRightLine className="text-muted-foreground h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </div>
+              <p className="text-foreground mt-3 text-base font-black">What solves it?</p>
+              <p className="text-muted-foreground mt-1 text-xs leading-5">
+                Tools, workflows, and guides mapped to problems.
+              </p>
+            </Link>
           </div>
-          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+
+          <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild className="h-11 rounded-full px-6 font-semibold">
-              <Link href="/explore">
-                Explore solutions
-                <RiSearchEyeLine className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="h-11 rounded-full px-6 font-semibold">
               <Link href="/projects/submit">
-                Post problem or solution
+                Post a problem or solution
                 <RiArrowRightLine className="h-4 w-4" />
               </Link>
             </Button>
+            <Button asChild variant="ghost" className="h-11 rounded-full px-6 font-semibold">
+              <Link href="/explore">Explore everything</Link>
+            </Button>
           </div>
         </section>
 
-        <section className="mb-12 grid gap-4 md:grid-cols-2">
-          <Link
-            href="/problems"
-            prefetch={false}
-            className="foundry-panel group rounded-2xl p-5 transition-all hover:-translate-y-0.5"
-          >
-            <span className="border-border bg-muted text-foreground inline-flex rounded-full border px-3 py-1 text-xs font-black tracking-[0.14em] uppercase">
-              Problems
-            </span>
-            <h2 className="text-foreground mt-4 text-xl font-black">What needs solving?</h2>
-            <p className="text-muted-foreground mt-2 text-sm leading-6">
-              The demand side of the exchange: pain points, blockers, workflows, and unsolved
-              questions people can vote up.
-            </p>
-            <span className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-black">
-              View problems
-              <RiArrowRightLine className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </Link>
-
-          <Link
-            href="/solutions"
-            prefetch={false}
-            className="foundry-panel group rounded-2xl p-5 transition-all hover:-translate-y-0.5"
-          >
-            <span className="border-border bg-muted text-foreground inline-flex rounded-full border px-3 py-1 text-xs font-black tracking-[0.14em] uppercase">
-              Solutions
-            </span>
-            <h2 className="text-foreground mt-4 text-xl font-black">What solves it?</h2>
-            <p className="text-muted-foreground mt-2 text-sm leading-6">
-              The supply side of the exchange: tools, workflows, guides, services, and answers
-              mapped back to real problems.
-            </p>
-            <span className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-black">
-              View solutions
-              <RiArrowRightLine className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </Link>
-        </section>
-
-        {/* Top solutions — full-width banner carousel, one at a time */}
-        {top3.length > 0 && (
+        {/* Featured — single carousel (merges the old top + most-discussed rows) */}
+        {featured.length > 0 && (
           <section className="mb-12">
-            <ToolCarousel slideClassName="min-w-0 flex-[0_0_100%]" autoplayMs={7500} loop>
-              {top3.map((p) => (
-                <ExploreHeroCard key={p.id} {...heroProps(p)} />
-              ))}
-            </ToolCarousel>
-          </section>
-        )}
-
-        {/* Most discussed solutions — two banners side by side, auto-advancing */}
-        {discussed.length > 0 && (
-          <section className="mb-14">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-foreground text-lg font-bold">Most discussed solutions</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Link href="/explore" className="flex items-center gap-1">
-                  View all
-                  <RiArrowRightLine className="h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <ToolCarousel
-              slideClassName="min-w-0 flex-[0_0_100%] sm:flex-[0_0_49%]"
-              autoplayMs={6250}
-              loop
-            >
-              {discussed.map((p) => (
-                <ExploreHeroCard
-                  key={p.id}
-                  {...heroProps(p)}
-                  heightClassName="h-[260px] sm:h-[320px]"
-                />
+            <ToolCarousel slideClassName="min-w-0 flex-[0_0_100%] sm:flex-[0_0_49%]" autoplayMs={6500} loop>
+              {featured.map((p) => (
+                <ExploreHeroCard key={p.id} {...heroProps(p)} heightClassName="h-[280px] sm:h-[340px]" />
               ))}
             </ToolCarousel>
           </section>
@@ -183,7 +130,7 @@ export default async function Home() {
         {/* Browse all */}
         {projects.length > 0 && (
           <section>
-            <h2 className="text-foreground mb-5 text-lg font-bold">Browse solution tools</h2>
+            <h2 className="text-foreground mb-5 text-lg font-bold">Browse solutions</h2>
             <ExploreBrowser projects={projects} isAuthenticated={isAuthenticated} />
           </section>
         )}
