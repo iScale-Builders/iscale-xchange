@@ -35,7 +35,7 @@ export default async function Home() {
     ...projects
       .filter((p) => !pinnedIds.has(p.id))
       .sort((a, b) => b.commentCount - a.commentCount),
-  ].slice(0, 8)
+  ].slice(0, 5)
 
   const heroProps = (p: ExploreProject) => ({
     slug: p.slug,
