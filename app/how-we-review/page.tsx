@@ -41,7 +41,7 @@ const CRITERIA = [
   },
   {
     heading: "Pricing transparency",
-    body: "Each tool page states its pricing model (free, freemium, or paid) so you can compare cost honestly before committing. We flag tools whose pricing is unclear.",
+    body: "Each tool page states its pricing model, including free or paid where relevant, so you can compare cost honestly before committing. We flag tools whose pricing is unclear.",
   },
   {
     heading: "Kept current",

@@ -11,7 +11,7 @@ export interface IScaleLabsAppSeed {
   githubUrl?: string
   launchStatus?: "scheduled" | "ongoing" | "launched"
   techStack: string[]
-  pricing: "free" | "freemium" | "paid"
+  pricing: "free" | "paid"
   platforms: string[]
   categories: string[]
   popularity: number
@@ -32,7 +32,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: thumbnail("promoteflow"),
     logoUrl: thumbnail("promoteflow"),
     techStack: ["Content Engine", "Social Workflow", "AI Agents"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Content", "Marketing", "Automation"],
     popularity: 110,
@@ -47,7 +47,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     logoUrl: "/images/apps/pintwist-3.webp",
     githubUrl: "https://github.com/qminati/pintwist",
     techStack: ["Chrome Extension", "JavaScript", "Local Storage"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Research", "Automation", "Pinterest"],
     popularity: 100,
@@ -61,7 +61,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: thumbnail("iscale-etsy"),
     logoUrl: realAsset("iscale-etsy-icon-128.png"),
     techStack: ["Research", "Data Pipeline", "Marketplace Analysis"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Research", "Etsy", "Listings"],
     popularity: 96,
@@ -76,7 +76,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     coverImage: "/images/apps/iscalemerch-2.webp",
     logoUrl: "/images/apps/iscalemerch-3.webp",
     techStack: ["Chrome Extension", "Amazon Merch", "Next.js"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Amazon Merch", "Research", "Listings"],
     popularity: 95,
@@ -90,7 +90,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: thumbnail("iscale-listings"),
     logoUrl: realAsset("iscale-listings-icon-128.png"),
     techStack: ["Listing Engine", "Keyword Systems", "POD Metadata"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Listings", "Keywords", "Automation"],
     popularity: 93,
@@ -104,7 +104,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: realAsset("automerch-pod-cover.png"),
     logoUrl: thumbnail("automerch"),
     techStack: ["Automation", "Upload Workflow", "Merch by Amazon"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["desktop", "web"],
     categories: ["Automation", "Amazon Merch", "Upload"],
     popularity: 92,
@@ -138,7 +138,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     ],
     logoUrl: "/images/apps/iscale-images-3.png",
     techStack: ["Image Generation", "Automation", "Asset Pipeline"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Images", "Automation", "Design"],
     launchStatus: "launched",
@@ -153,7 +153,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: thumbnail("iscale-keywords"),
     logoUrl: thumbnail("iscale-keywords"),
     techStack: ["Keyword Research", "Trademark Checks", "POD"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Keywords", "Compliance", "Research"],
     popularity: 88,
@@ -167,7 +167,7 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     productImage: thumbnail("design-library-team"),
     logoUrl: thumbnail("design-library-team"),
     techStack: ["Design Systems", "Asset Library", "Team Workflow"],
-    pricing: "freemium",
+    pricing: "free",
     platforms: ["web"],
     categories: ["Design", "Assets", "Workflow"],
     popularity: 80,

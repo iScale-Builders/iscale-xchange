@@ -34,7 +34,6 @@ export type LaunchType = (typeof launchType)[keyof typeof launchType]
 // Ajouter de nouveaux enums pour les projets tech
 export const pricingType = {
   FREE: "free",
-  FREEMIUM: "freemium",
   PAID: "paid",
 } as const
 

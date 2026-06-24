@@ -155,7 +155,7 @@ export interface SoftwareAppInput {
   image?: string
   /** Maps to schema.org applicationCategory, e.g. "BusinessApplication". */
   applicationCategory?: string
-  /** Free-text price label, e.g. "Free", "Freemium", "Paid". */
+  /** Free-text price label, e.g. "Free" or "Paid". */
   priceLabel?: string
   /** Upvote count used as a lightweight rating signal. */
   ratingCount?: number
