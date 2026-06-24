@@ -314,7 +314,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <div className="text-center sm:text-left">
                     <p className="font-medium">Coming soon</p>
                     <p className="text-sm opacity-90">
-                      This iScaleLabs app page is being prepared for launch
+                      This iScaleXchange app page is being prepared for launch
                       {scheduledDate
                         ? ` on ${format(scheduledDate, "EEEE, MMMM d, yyyy")} at 08:00 AM UTC.`
                         : "."}
@@ -589,7 +589,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   Launch state
                 </p>
                 <p className="text-muted-foreground mt-2 text-sm">
-                  Public access is queued while the iScaleLabs app catalog is prepared.
+                  Public access is queued while the iScaleXchange app catalog is prepared.
                 </p>
               </div>
 
