@@ -25,7 +25,14 @@ export default async function Home() {
   const isAuthenticated = !!userId
 
   // One condensed featured rail: pinned launches first, then most-discussed.
-  const pinnedSlugs = ["promoteflow", "pintwist", "iscale-images", "iscale-etsy", "iscale-merch"]
+  const pinnedSlugs = [
+    "pixel-mock-bulk-product-mockups",
+    "promoteflow",
+    "pintwist",
+    "iscale-images",
+    "iscale-etsy",
+    "iscale-merch",
+  ]
   const pinned = pinnedSlugs
     .map((slug) => projects.find((p) => p.slug === slug))
     .filter((p): p is ExploreProject => Boolean(p))
