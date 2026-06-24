@@ -104,7 +104,7 @@ function buildFaqs(lowerPhrase: string, totalCount: number): FaqItem[] {
     },
     {
       question: `Are these ${lowerPhrase} free?`,
-      answer: `Pricing varies by tool — many offer a free tier or free plan, while others are paid or freemium. Each tool's page lists its pricing so you can compare before you commit.`,
+      answer: `Pricing varies by tool — many offer a free tier or free plan, while others may be paid. Each tool's page lists its pricing so you can compare before you commit.`,
     },
     {
       question: `How are the ${lowerPhrase} ranked?`,

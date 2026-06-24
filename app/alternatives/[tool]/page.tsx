@@ -96,7 +96,7 @@ function buildFaqs(toolName: string, count: number): FaqItem[] {
     },
     {
       question: `Are there free alternatives to ${toolName}?`,
-      answer: `Often yes — several listed alternatives offer a free or freemium tier. Each tool's page states its pricing so you can compare cost before switching.`,
+      answer: `Often yes — several listed alternatives offer a free tier or free plan. Each tool's page states its pricing so you can compare cost before switching.`,
     },
     {
       question: `How were these ${toolName} alternatives chosen?`,
