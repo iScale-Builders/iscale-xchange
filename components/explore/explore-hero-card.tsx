@@ -126,12 +126,18 @@ export function ExploreHeroCard({
       {/* the text, underneath */}
       <div className="flex flex-col items-center gap-2 pt-4 text-center">
         <div className="flex flex-wrap items-center justify-center gap-2 text-muted-foreground">
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold">
+          <span className="border-border/60 bg-foreground/[0.03] inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold">
             <RiFireLine className="h-3 w-3" />
             Top tool
           </span>
-          <span className="text-[11px] font-semibold">{toolStatusLabel(launchStatus)}</span>
-          {category && <span className="text-[11px] font-medium">{category}</span>}
+          <span className="border-border/60 bg-foreground/[0.03] rounded-full border px-2.5 py-0.5 text-[11px] font-semibold">
+            {toolStatusLabel(launchStatus)}
+          </span>
+          {category && (
+            <span className="border-border/60 bg-foreground/[0.03] rounded-full border px-2.5 py-0.5 text-[11px] font-medium">
+              {category}
+            </span>
+          )}
         </div>
         <h2 className="font-heading mx-auto max-w-3xl text-2xl font-black tracking-tight text-foreground sm:text-4xl">
           {name}
