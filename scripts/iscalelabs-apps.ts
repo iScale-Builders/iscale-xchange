@@ -25,7 +25,6 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
   {
     name: "PromoteFlow",
     slug: "promoteflow",
-    builderEmail: "dobrin22@gmail.com",
     description:
       "PromoteFlow is the promotion command center for turning real iScaleLabs work into launch content, social posts, replies, short-form clips, community prompts, and distribution workflows without losing the thread of what is actually being built.",
     websiteUrl: listingUrl("promoteflow"),
