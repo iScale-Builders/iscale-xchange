@@ -27,6 +27,7 @@ export interface ExploreProject {
   websiteUrl: string | null
   launchStatus: string
   launchType: string | null
+  submissionType: string
   dailyRanking: number | null
   upvoteCount: number
   commentCount: number
@@ -59,6 +60,7 @@ export async function getExploreProjects(limit = 60): Promise<ExploreProject[]> 
       websiteUrl: projectTable.websiteUrl,
       launchStatus: projectTable.launchStatus,
       launchType: projectTable.launchType,
+      submissionType: projectTable.submissionType,
       dailyRanking: projectTable.dailyRanking,
       createdAt: projectTable.createdAt,
       creatorName: userTable.name,
@@ -125,6 +127,7 @@ export async function getExploreProjects(limit = 60): Promise<ExploreProject[]> 
     websiteUrl: row.websiteUrl,
     launchStatus: row.launchStatus,
     launchType: row.launchType,
+    submissionType: row.submissionType,
     dailyRanking: row.dailyRanking,
     upvoteCount: row.upvoteCount,
     commentCount: row.commentCount,

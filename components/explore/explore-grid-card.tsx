@@ -8,6 +8,7 @@ import { RiFlashlightLine, RiMessage2Line } from "@remixicon/react"
 
 import { toolStatusLabel } from "@/lib/tool-status"
 import { CardImageCycler } from "@/components/explore/card-image-cycler"
+import { SubmissionBadge } from "@/components/explore/submission-badge"
 import { UpvoteButton } from "@/components/project/upvote-button"
 
 interface Category {
@@ -29,6 +30,7 @@ interface ExploreGridCardProps {
   projectId: string
   userHasUpvoted?: boolean
   isAuthenticated?: boolean
+  submissionType?: string | null
 }
 
 function stripHtml(html: string): string {
@@ -49,6 +51,7 @@ export function ExploreGridCard({
   projectId,
   userHasUpvoted = false,
   isAuthenticated = false,
+  submissionType,
 }: ExploreGridCardProps) {
   const router = useRouter()
   const projectPageUrl = `/projects/${slug}`
@@ -60,6 +63,7 @@ export function ExploreGridCard({
     >
       {/* Thumbnail */}
       <div className="bg-muted relative aspect-video w-full overflow-hidden rounded-xl">
+        <SubmissionBadge type={submissionType} className="absolute bottom-2 left-2 z-20" />
         <CardImageCycler
           images={images}
           name={name}
