@@ -10,6 +10,7 @@ import { subscribeTick } from "@/lib/sync-tick"
 import { toolStatusLabel } from "@/lib/tool-status"
 import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 
+import { SubmissionBadge } from "./submission-badge"
 import { useCarouselSync, useSlideIndex } from "./tool-carousel"
 
 function stripHtml(html: string): string {
@@ -28,6 +29,7 @@ interface ExploreHeroCardProps {
   upvoteCount?: number
   commentCount?: number
   heightClassName?: string
+  submissionType?: string | null
 }
 
 // Featured banner: just the image, then the text underneath. No container chrome,
@@ -44,6 +46,7 @@ export function ExploreHeroCard({
   upvoteCount = 0,
   commentCount = 0,
   heightClassName = "h-[300px] sm:h-[400px]",
+  submissionType,
 }: ExploreHeroCardProps) {
   const router = useRouter()
   const url = `/projects/${slug}`
@@ -79,6 +82,7 @@ export function ExploreHeroCard({
     <article onClick={() => router.push(url)} className="group block w-full cursor-pointer">
       {/* the image, shown plainly */}
       <div className={`relative w-full ${heightClassName}`}>
+        <SubmissionBadge type={submissionType} className="absolute top-3 left-3 z-10" />
         {images.length > 0 ? (
           images.map((src, index) => {
             const active = index === activeIndex
