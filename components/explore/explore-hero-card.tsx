@@ -10,6 +10,8 @@ import { subscribeTick } from "@/lib/sync-tick"
 import { toolStatusLabel } from "@/lib/tool-status"
 import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 
+import { useCarouselSync, useSlideIndex } from "./tool-carousel"
+
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim()
 }
@@ -48,6 +50,14 @@ export function ExploreHeroCard({
   const [imageIndex, setImageIndex] = useState(0)
   const activeIndex = imageIndex % Math.max(images.length, 1)
 
+  // If this card lives inside an autoplay carousel, phase-lock its image swap to the
+  // carousel beat: while this slide is the active one, change the image once at the
+  // half-interval. So the rhythm reads listing -> image changes -> next listing.
+  const sync = useCarouselSync()
+  const slideIndex = useSlideIndex()
+  const carouselAutoplayMs = sync?.autoplayMs ?? 0
+  const isActiveSlide = sync !== null && sync.activeIndex === slideIndex
+
   useEffect(() => {
     if (images.length < 2) return
     if (
@@ -56,8 +66,14 @@ export function ExploreHeroCard({
     ) {
       return
     }
-    return subscribeTick(() => setImageIndex((prev) => (prev + 1) % images.length))
-  }, [images.length])
+    if (carouselAutoplayMs) {
+      if (!isActiveSlide) return
+      const half = Math.max(carouselAutoplayMs / 2, 1500)
+      const t = setTimeout(() => setImageIndex((prev) => prev + 1), half)
+      return () => clearTimeout(t)
+    }
+    return subscribeTick(() => setImageIndex((prev) => prev + 1))
+  }, [images.length, carouselAutoplayMs, isActiveSlide])
 
   return (
     <article onClick={() => router.push(url)} className="group block w-full cursor-pointer">

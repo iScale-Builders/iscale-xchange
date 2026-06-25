@@ -1,10 +1,26 @@
 "use client"
 
 import * as React from "react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 import useEmblaCarousel from "embla-carousel-react"
+
+// Lets a slide's internal media (e.g. cycling images) phase-lock to the carousel:
+// it knows which slide is active and the autoplay interval, so it can time its own
+// changes to the carousel's beat (e.g. swap at the half-interval).
+export const CarouselSyncContext = createContext<{
+  activeIndex: number
+  autoplayMs: number
+} | null>(null)
+export const SlideIndexContext = createContext<number>(-1)
+
+export function useCarouselSync() {
+  return useContext(CarouselSyncContext)
+}
+export function useSlideIndex() {
+  return useContext(SlideIndexContext)
+}
 
 // Horizontal, swipeable carousel of cards. Optionally loops and auto-advances.
 export function ToolCarousel({
@@ -26,12 +42,14 @@ export function ToolCarousel({
   })
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const paused = useRef(false)
 
   const onUpdate = useCallback(() => {
     if (!emblaApi) return
     setCanPrev(emblaApi.canScrollPrev())
     setCanNext(emblaApi.canScrollNext())
+    setSelectedIndex(emblaApi.selectedScrollSnap())
   }, [emblaApi])
 
   useEffect(() => {
@@ -59,42 +77,44 @@ export function ToolCarousel({
   const slides = React.Children.toArray(children)
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => (paused.current = true)}
-      onMouseLeave={() => (paused.current = false)}
-    >
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-4">
-          {slides.map((slide, i) => (
-            <div key={i} className={slideClassName}>
-              {slide}
-            </div>
-          ))}
+    <CarouselSyncContext.Provider value={{ activeIndex: selectedIndex, autoplayMs }}>
+      <div
+        className="relative"
+        onMouseEnter={() => (paused.current = true)}
+        onMouseLeave={() => (paused.current = false)}
+      >
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-4">
+            {slides.map((slide, i) => (
+              <div key={i} className={slideClassName}>
+                <SlideIndexContext.Provider value={i}>{slide}</SlideIndexContext.Provider>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation: plain arrows centered underneath the carousel. */}
+        <div className="mt-3 flex items-center justify-center gap-6">
+          <button
+            type="button"
+            aria-label="Previous"
+            onClick={() => emblaApi?.scrollPrev()}
+            disabled={!loop && !canPrev}
+            className="text-muted-foreground hover:text-foreground transition disabled:pointer-events-none disabled:opacity-30"
+          >
+            <RiArrowLeftSLine className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next"
+            onClick={() => emblaApi?.scrollNext()}
+            disabled={!loop && !canNext}
+            className="text-muted-foreground hover:text-foreground transition disabled:pointer-events-none disabled:opacity-30"
+          >
+            <RiArrowRightSLine className="h-6 w-6" />
+          </button>
         </div>
       </div>
-
-      {/* Navigation: plain arrows centered underneath the carousel. */}
-      <div className="mt-3 flex items-center justify-center gap-6">
-        <button
-          type="button"
-          aria-label="Previous"
-          onClick={() => emblaApi?.scrollPrev()}
-          disabled={!loop && !canPrev}
-          className="text-muted-foreground hover:text-foreground transition disabled:pointer-events-none disabled:opacity-30"
-        >
-          <RiArrowLeftSLine className="h-6 w-6" />
-        </button>
-        <button
-          type="button"
-          aria-label="Next"
-          onClick={() => emblaApi?.scrollNext()}
-          disabled={!loop && !canNext}
-          className="text-muted-foreground hover:text-foreground transition disabled:pointer-events-none disabled:opacity-30"
-        >
-          <RiArrowRightSLine className="h-6 w-6" />
-        </button>
-      </div>
-    </div>
+    </CarouselSyncContext.Provider>
   )
 }
