@@ -1,11 +1,33 @@
+import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
 import { db } from "@/drizzle/db"
 import { project } from "@/drizzle/db/schema"
 import { eq } from "drizzle-orm"
 
+import { API_RATE_LIMITS } from "@/lib/constants"
+import { checkRateLimit } from "@/lib/rate-limit"
+
 export async function GET(request: Request) {
   try {
+    // SECURITY: this endpoint is unauthenticated and acts as an "is this URL
+    // registered?" oracle. Rate-limit per IP to blunt enumeration / DoS, same as
+    // the search API.
+    const headersList = await headers()
+    const forwardedFor = headersList.get("x-forwarded-for")
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "127.0.0.1"
+    const rateLimit = await checkRateLimit(
+      `check-url:${ip}`,
+      API_RATE_LIMITS.SEARCH.REQUESTS,
+      API_RATE_LIMITS.SEARCH.WINDOW,
+    )
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "rate_limit_exceeded", reset: rateLimit.reset },
+        { status: 429 },
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const url = searchParams.get("url")
 
