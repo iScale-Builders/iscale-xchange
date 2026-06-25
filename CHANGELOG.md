@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] - 2026-06-25
+
+### Fixed
+
+- Vertically centered the ReadyPixl sponsor wordmark with its logo icon. The
+  wordmark SVGs had ~18px of empty space below the glyphs in their `0 0 500 89`
+  viewBox, so the centered `<img>` made the text sit high next to the icon.
+  Cropped the viewBox to the glyph bounds (`0 0 500 71`) so the wordmark and icon
+  share a centerline.
+
 ## [0.9.1] - 2026-06-25
 
 ### Fixed
