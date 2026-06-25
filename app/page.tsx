@@ -9,6 +9,7 @@ import { ExploreBrowser } from "@/components/explore/explore-browser"
 import { ExploreHeroCard } from "@/components/explore/explore-hero-card"
 import { galleryFor } from "@/components/explore/explore-view"
 import { ToolCarousel } from "@/components/explore/tool-carousel"
+import { HeroNetwork } from "@/components/home/hero-network"
 import { getExploreProjects } from "@/app/actions/explore"
 import type { ExploreProject } from "@/app/actions/explore"
 
@@ -48,7 +49,9 @@ export default async function Home() {
     <main className="bg-background text-foreground min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Hero — headline + the problem/solution split, all condensed at the top */}
-        <section className="mx-auto mb-12 max-w-5xl text-center">
+        <section className="relative isolate mx-auto mb-12 max-w-5xl px-4 py-8 text-center">
+          <HeroNetwork />
+          <div className="relative z-10">
           <h1 className="text-foreground text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl lg:whitespace-nowrap">
             Where Problems Meet Solutions
           </h1>
@@ -71,6 +74,7 @@ export default async function Home() {
             <Button asChild variant="outline" className="h-11 rounded-full px-6 font-semibold">
               <Link href="/projects/submit">Post a problem or solution</Link>
             </Button>
+          </div>
           </div>
         </section>
 
