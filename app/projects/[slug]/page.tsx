@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server"
 import { RiGithubFill, RiHashtag, RiTwitterFill, RiVipCrownLine } from "@remixicon/react"
 import { format } from "date-fns"
 
+import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { isUpvotingOpen } from "@/lib/launch-utils"
 import { breadcrumbSchema, softwareApplicationSchema } from "@/lib/seo/schema"
 import { slugify } from "@/lib/seo/slug"
@@ -91,9 +92,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound()
   }
 
-  const { userId } = await auth()
+  const { userId: clerkUserId } = await auth()
+  const currentUserId = clerkUserId ? await getSyncedCurrentUserId() : null
 
-  const hasUpvoted = userId ? await hasUserUpvoted(projectData.id) : false
+  const hasUpvoted = currentUserId ? await hasUserUpvoted(projectData.id) : false
 
   const scheduledDate = projectData.scheduledLaunchDate
     ? new Date(projectData.scheduledLaunchDate)
@@ -105,7 +107,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const isScheduled = false
   const statusLabel = toolStatusLabel(projectData.launchStatus, projectData.websiteUrl)
 
-  const isOwner = userId === projectData.createdBy
+  const isOwner = currentUserId === projectData.createdBy
 
   const projectGallery = galleryFor(projectData)
   const projectThumbnail =
@@ -210,7 +212,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                       projectId={projectData.id}
                       upvoteCount={projectData.upvoteCount}
                       initialUpvoted={hasUpvoted}
-                      isAuthenticated={Boolean(userId)}
+                      isAuthenticated={Boolean(currentUserId)}
                     />
                   ) : (
                     <div className="border-muted bg-muted flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-medium">
@@ -279,7 +281,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                       projectId={projectData.id}
                       upvoteCount={projectData.upvoteCount}
                       initialUpvoted={hasUpvoted}
-                      isAuthenticated={Boolean(userId)}
+                      isAuthenticated={Boolean(currentUserId)}
                     />
                   ) : (
                     <div className="border-muted bg-muted flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-medium">
@@ -394,8 +396,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </h2>
                 <ProjectComments
                   projectId={projectData.id}
-                  isAuthenticated={Boolean(userId)}
-                  currentUserId={userId}
+                  isAuthenticated={Boolean(currentUserId)}
+                  currentUserId={currentUserId}
                 />
               </div>
             </div>

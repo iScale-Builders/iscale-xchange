@@ -555,15 +555,15 @@ export async function getAllProjectSlugs() {
 // removes its category links and upvotes; comments are not FK-linked so they are
 // cleaned up best-effort.
 export async function deleteOwnProject(projectId: string) {
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: "You must be signed in." }
+  const localUser = await ensureLocalUser()
+  if (!localUser) return { success: false, error: "You must be signed in." }
 
   const existing = await db.query.project.findFirst({
     where: eq(projectTable.id, projectId),
     columns: { id: true, createdBy: true },
   })
   if (!existing) return { success: false, error: "Post not found." }
-  if (existing.createdBy !== userId) {
+  if (existing.createdBy !== localUser.id) {
     return { success: false, error: "You can only delete your own posts." }
   }
 
