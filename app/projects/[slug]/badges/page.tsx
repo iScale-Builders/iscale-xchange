@@ -2,9 +2,9 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { auth } from "@clerk/nextjs/server"
 import { RiArrowLeftLine } from "@remixicon/react"
 
+import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { getProjectBySlug } from "@/app/actions/project-details"
 
 import { BadgesDisplay } from "../../../../components/badges/BadgesDisplay"
@@ -39,9 +39,9 @@ export default async function BadgesPage({ params }: BadgesPageProps) {
     notFound()
   }
 
-  const { userId } = await auth()
+  const currentUserId = await getSyncedCurrentUserId()
 
-  const isOwner = userId === projectData.createdBy
+  const isOwner = currentUserId === projectData.createdBy
 
   if (!isOwner || !projectData.dailyRanking || projectData.dailyRanking > 3) {
     notFound()

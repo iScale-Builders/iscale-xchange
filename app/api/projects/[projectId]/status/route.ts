@@ -2,8 +2,9 @@ import { NextResponse } from "next/server"
 
 import { db } from "@/drizzle/db"
 import { project as projectTable } from "@/drizzle/db/schema"
-import { auth } from "@clerk/nextjs/server"
 import { eq } from "drizzle-orm"
+
+import { ensureLocalUser } from "@/lib/ensure-user"
 
 export async function GET(
   request: Request,
@@ -11,8 +12,8 @@ export async function GET(
 ) {
   try {
     // Vérifier l'authentification
-    const { userId } = await auth()
-    if (!userId) {
+    const localUser = await ensureLocalUser()
+    if (!localUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -34,7 +35,7 @@ export async function GET(
     }
 
     // Vérifier que l'utilisateur est le propriétaire de la chaîne
-    if (projectData.createdBy !== userId) {
+    if (projectData.createdBy !== localUser.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 

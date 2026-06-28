@@ -11,7 +11,6 @@ import {
   LaunchType,
   project as projectTable,
 } from "@/drizzle/db/schema"
-import { auth } from "@clerk/nextjs/server"
 import { addDays, format, isBefore, parse } from "date-fns"
 import { and, count as drizzleCount, eq, gte, lt, ne, sql } from "drizzle-orm"
 
@@ -22,6 +21,7 @@ import {
   LAUNCH_TYPES,
   USER_DAILY_LAUNCH_LIMIT,
 } from "@/lib/constants"
+import { ensureLocalUser } from "@/lib/ensure-user"
 
 export interface LaunchAvailability {
   date: string
@@ -166,10 +166,11 @@ export async function scheduleLaunch(
   // SECURITY: derive the caller from the server session. Never trust a
   // client-supplied user id — previously this was an IDOR where any signed-in
   // user could schedule/feature another user's project by passing its id.
-  const { userId } = await auth()
-  if (!userId) {
+  const localUser = await ensureLocalUser()
+  if (!localUser) {
     throw new Error("Authentication required to schedule a launch.")
   }
+  const userId = localUser.id
 
   // SECURITY: verify the caller owns this project before mutating it.
   const [ownerRow] = await db
