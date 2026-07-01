@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select"
 import { updateProject } from "@/app/actions/project-details"
 import { getAllCategories } from "@/app/actions/projects"
+import { AVAILABILITY_OPTIONS } from "@/lib/tool-status"
 
 import { ImageUploadInput } from "./image-upload-input"
 
@@ -49,6 +50,7 @@ interface EditProjectFormProps {
   initialGalleryImages: string[] | null
   initialDescription: string
   initialCategories: { id: string; name: string }[]
+  initialAvailability: string
   onUpdate: () => void
   onCancel: () => void
 }
@@ -63,6 +65,7 @@ export function EditProjectForm({
   initialGalleryImages,
   initialDescription,
   initialCategories,
+  initialAvailability,
   onUpdate,
   onCancel,
 }: EditProjectFormProps) {
@@ -81,6 +84,7 @@ export function EditProjectForm({
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialCategories.map((cat) => cat.id),
   )
+  const [availability, setAvailability] = useState(initialAvailability)
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -125,6 +129,7 @@ export function EditProjectForm({
         galleryImages: cleanedGalleryImages,
         description,
         categories: selectedCategories,
+        availability,
       })
 
       if (result.success) {
@@ -208,6 +213,25 @@ export function EditProjectForm({
             onChange={(event) => setWebsiteUrl(event.target.value)}
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="edit-availability">Status</Label>
+        <Select value={availability} onValueChange={setAvailability}>
+          <SelectTrigger id="edit-availability" className="w-full">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            {AVAILABILITY_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-muted-foreground text-xs">
+          Coming soon, Testing, or Available — independent of the Website URL.
+        </p>
       </div>
 
       <ImageUploadInput

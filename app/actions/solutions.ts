@@ -18,6 +18,7 @@ export interface SolutionListItem {
   description: string
   logoUrl: string
   launchStatus: string
+  availability: string
   websiteUrl: string | null
   upvoteCount: number
   commentCount: number
@@ -43,6 +44,7 @@ async function fetchSolutions(limit: number): Promise<SolutionListItem[]> {
       description: projectTable.description,
       logoUrl: projectTable.logoUrl,
       launchStatus: projectTable.launchStatus,
+      availability: projectTable.availability,
       websiteUrl: projectTable.websiteUrl,
       createdAt: projectTable.createdAt,
       upvoteCount: sql<number>`cast(count(distinct ${upvote.id}) as int)`.mapWith(Number),
@@ -83,6 +85,7 @@ async function fetchSolutions(limit: number): Promise<SolutionListItem[]> {
     description: r.description ?? "",
     logoUrl: r.logoUrl ?? "",
     launchStatus: r.launchStatus,
+    availability: r.availability,
     websiteUrl: r.websiteUrl,
     upvoteCount: r.upvoteCount,
     commentCount: r.commentCount,

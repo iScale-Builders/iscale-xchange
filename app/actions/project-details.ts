@@ -105,6 +105,7 @@ export async function updateProject(
     galleryImages?: string[]
     description: string
     categories: string[]
+    availability?: string
   },
 ) {
   const userId = await getCurrentUserId()
@@ -191,6 +192,7 @@ export async function updateProject(
         coverImageUrl: coverImage,
         galleryImages: galleryImages.length > 0 ? galleryImages : null,
         description: data.description,
+        ...(data.availability ? { availability: data.availability } : {}),
         updatedAt: new Date(),
       })
       .where(eq(project.id, projectId))
