@@ -105,7 +105,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   // Launch scheduling is retired — the exchange has no pre-public "coming soon"
   // state, so every listed post renders as live.
   const isScheduled = false
-  const statusLabel = toolStatusLabel(projectData.launchStatus, projectData.websiteUrl)
+  const statusLabel = toolStatusLabel(
+    projectData.launchStatus,
+    projectData.websiteUrl,
+    projectData.availability,
+  )
 
   const isOwner = currentUserId === projectData.createdBy
 
@@ -383,6 +387,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     initialGalleryImages={projectGallery}
                     initialDescription={projectData.description}
                     initialCategories={projectData.categories}
+                    initialAvailability={projectData.availability}
                     isOwner={isOwner}
                   />
                   <DeleteProjectButton projectId={projectData.id} />

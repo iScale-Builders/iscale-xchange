@@ -140,6 +140,9 @@ export const project = pgTable(
     scheduledLaunchDate: timestamp("scheduled_launch_date"),
     launchType: text("launch_type").default(launchType.FREE),
     submissionType: text("submission_type").notNull().default("solution"),
+    // Explicit availability the submitter/owner sets ("coming_soon" | "testing" |
+    // "available"). Drives the status badge, independent of website_url.
+    availability: text("availability").notNull().default("coming_soon"),
     problemStatus: text("problem_status"),
     problemSolved: text("problem_solved"),
     featuredOnHomepage: boolean("featured_on_homepage").default(false),

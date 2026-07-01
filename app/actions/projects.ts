@@ -302,6 +302,8 @@ export async function submitProject(projectData: ProjectSubmissionData) {
         id: crypto.randomUUID(),
         // New submissions are live immediately (launch scheduling retired).
         launchStatus: launchStatus.LAUNCHED,
+        // Submitted with a live URL → available by default (owner can change it later).
+        availability: "available",
         // Utiliser les variables déstructurées de projectData
         name,
         slug,

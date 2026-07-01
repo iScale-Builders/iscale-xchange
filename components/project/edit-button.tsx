@@ -19,6 +19,7 @@ interface EditButtonProps {
   initialGalleryImages: string[] | null
   initialDescription: string
   initialCategories: { id: string; name: string }[]
+  initialAvailability: string
   isOwner: boolean
 }
 
@@ -32,6 +33,7 @@ export function EditButton({
   initialGalleryImages,
   initialDescription,
   initialCategories,
+  initialAvailability,
   isOwner,
 }: EditButtonProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -69,6 +71,7 @@ export function EditButton({
             initialGalleryImages={initialGalleryImages}
             initialDescription={initialDescription}
             initialCategories={initialCategories}
+            initialAvailability={initialAvailability}
             onUpdate={handleUpdate}
             onCancel={() => setIsDialogOpen(false)}
           />

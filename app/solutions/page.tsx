@@ -80,7 +80,7 @@ export default async function SolutionsPage() {
                 )}
                 <div className="flex items-center gap-2">
                   <span className="border-border bg-muted text-foreground inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black tracking-[0.14em] uppercase">
-                    {toolStatusLabel(s.launchStatus, s.websiteUrl)}
+                    {toolStatusLabel(s.launchStatus, s.websiteUrl, s.availability)}
                   </span>
                   {s.categories.slice(0, 2).map((c) => (
                     <span key={c.id} className="text-muted-foreground text-xs">
