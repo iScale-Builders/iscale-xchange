@@ -66,7 +66,7 @@ export function ExploreBrowser({ projects, isAuthenticated = false }: ExploreBro
 
       {/* Category filter chips */}
       {categories.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2 overflow-x-auto py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <CategoryChip
             label="All"
             active={activeCategory === ALL}
@@ -139,7 +139,7 @@ function CategoryChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+        "shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
         active
           ? "text-primary-foreground border-cyan-200/45 bg-cyan-200 shadow-[0_0_24px_rgb(0_229_255_/_0.22)]"
           : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border-cyan-100/16",
