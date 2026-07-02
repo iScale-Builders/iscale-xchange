@@ -49,9 +49,9 @@ export default async function Home() {
 
   return (
     <main className="bg-background text-foreground min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Hero — headline + the problem/solution split, all condensed at the top */}
-        <section className="relative isolate mx-auto mb-12 max-w-5xl px-4 py-8 text-center">
+        <section className="relative isolate mx-auto mb-8 max-w-5xl px-4 py-4 text-center">
           <HeroNetwork />
           <div className="relative z-10">
             <h1 className="text-foreground text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl lg:whitespace-nowrap">
