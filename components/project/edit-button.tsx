@@ -20,6 +20,7 @@ interface EditButtonProps {
   initialDescription: string
   initialCategories: { id: string; name: string }[]
   initialAvailability: string
+  initialHidden: boolean
   isOwner: boolean
 }
 
@@ -34,6 +35,7 @@ export function EditButton({
   initialDescription,
   initialCategories,
   initialAvailability,
+  initialHidden,
   isOwner,
 }: EditButtonProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -72,6 +74,7 @@ export function EditButton({
             initialDescription={initialDescription}
             initialCategories={initialCategories}
             initialAvailability={initialAvailability}
+            initialHidden={initialHidden}
             onUpdate={handleUpdate}
             onCancel={() => setIsDialogOpen(false)}
           />

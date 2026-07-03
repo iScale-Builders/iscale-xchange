@@ -9,7 +9,7 @@ import {
   submissionType,
   upvote,
 } from "@/drizzle/db/schema"
-import { desc, eq, inArray, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, sql } from "drizzle-orm"
 
 export interface SolutionListItem {
   id: string
@@ -53,7 +53,12 @@ async function fetchSolutions(limit: number): Promise<SolutionListItem[]> {
     .from(projectTable)
     .leftJoin(upvote, eq(upvote.projectId, projectTable.id))
     .leftJoin(fumaComments, sql`"fuma_comments"."page"::text = ${projectTable.id}`)
-    .where(eq(projectTable.submissionType, submissionType.SOLUTION))
+    .where(
+      and(
+        eq(projectTable.submissionType, submissionType.SOLUTION),
+        eq(projectTable.hidden, false),
+      ),
+    )
     .groupBy(projectTable.id)
     .orderBy(desc(sql`count(distinct ${upvote.id})`), desc(projectTable.createdAt))
     .limit(limit)

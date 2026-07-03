@@ -91,6 +91,7 @@ export async function getMakerProfile(userId: string): Promise<MakerProfile | nu
         eq(projectTable.createdBy, userId),
         ne(projectTable.launchStatus, launchStatus.PAYMENT_PENDING),
         ne(projectTable.launchStatus, launchStatus.PAYMENT_FAILED),
+        eq(projectTable.hidden, false),
       ),
     )
     .groupBy(projectTable.id)

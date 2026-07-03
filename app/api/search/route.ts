@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { db } from "@/drizzle/db"
 import { category, project } from "@/drizzle/db/schema"
-import { ilike, sql } from "drizzle-orm"
+import { and, eq, ilike, sql } from "drizzle-orm"
 
 import { API_RATE_LIMITS } from "@/lib/constants"
 import { checkRateLimit } from "@/lib/rate-limit"
@@ -41,7 +41,7 @@ const getSearchResults = unstable_cache(
           type: sql<"project">`'project'`.as("type"),
         })
         .from(project)
-        .where(ilike(project.name, `%${query}%`))
+        .where(and(ilike(project.name, `%${query}%`), eq(project.hidden, false)))
         .limit(limit)
 
       // Rechercher dans les catégories

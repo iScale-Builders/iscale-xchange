@@ -78,6 +78,7 @@ export async function getExploreProjects(limit = 60): Promise<ExploreProject[]> 
       and(
         ne(projectTable.launchStatus, launchStatus.PAYMENT_PENDING),
         eq(projectTable.submissionType, submissionType.SOLUTION),
+        eq(projectTable.hidden, false),
       ),
     )
     .groupBy(projectTable.id, userTable.id)

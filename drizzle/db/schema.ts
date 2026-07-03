@@ -143,6 +143,9 @@ export const project = pgTable(
     // Explicit availability the submitter/owner sets ("coming_soon" | "testing" |
     // "available"). Drives the status badge, independent of website_url.
     availability: text("availability").notNull().default("coming_soon"),
+    // Hidden/unpublished: excluded from every public surface; only the owner
+    // (and admins) can see and edit it.
+    hidden: boolean("hidden").notNull().default(false),
     problemStatus: text("problem_status"),
     problemSolved: text("problem_solved"),
     featuredOnHomepage: boolean("featured_on_homepage").default(false),

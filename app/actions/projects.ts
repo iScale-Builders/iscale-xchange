@@ -420,6 +420,7 @@ export async function getProjectsByCategory(
 
   const queryConditions = and(
     eq(projectToCategory.categoryId, categoryId),
+    eq(projectTable.hidden, false),
     or(
       eq(projectTable.launchStatus, "scheduled"),
       eq(projectTable.launchStatus, "ongoing"),
@@ -541,10 +542,13 @@ export async function getAllProjectSlugs() {
       .select({ slug: projectTable.slug })
       .from(projectTable)
       .where(
-        or(
-          eq(projectTable.launchStatus, "scheduled"),
-          eq(projectTable.launchStatus, "ongoing"),
-          eq(projectTable.launchStatus, "launched"),
+        and(
+          eq(projectTable.hidden, false),
+          or(
+            eq(projectTable.launchStatus, "scheduled"),
+            eq(projectTable.launchStatus, "ongoing"),
+            eq(projectTable.launchStatus, "launched"),
+          ),
         ),
       )
     return rows.map((r) => r.slug)
