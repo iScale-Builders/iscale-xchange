@@ -22,7 +22,7 @@ async function getCurrentUserId() {
 
 // Get project by slug
 export async function getProjectBySlug(slug: string) {
-  await getSyncedCurrentUserId()
+  const viewerId = await getSyncedCurrentUserId()
 
   // Get project details - Exclure les projets avec le statut payment_pending
   const [projectData] = await db
@@ -32,6 +32,11 @@ export async function getProjectBySlug(slug: string) {
     .limit(1)
 
   if (!projectData) {
+    return null
+  }
+
+  // Hidden listings are visible only to their owner (for preview/editing).
+  if (projectData.hidden && projectData.createdBy !== viewerId) {
     return null
   }
 
@@ -106,6 +111,7 @@ export async function updateProject(
     description: string
     categories: string[]
     availability?: string
+    hidden?: boolean
   },
 ) {
   const userId = await getCurrentUserId()
@@ -193,6 +199,7 @@ export async function updateProject(
         galleryImages: galleryImages.length > 0 ? galleryImages : null,
         description: data.description,
         ...(data.availability ? { availability: data.availability } : {}),
+        ...(data.hidden !== undefined ? { hidden: data.hidden } : {}),
         updatedAt: new Date(),
       })
       .where(eq(project.id, projectId))

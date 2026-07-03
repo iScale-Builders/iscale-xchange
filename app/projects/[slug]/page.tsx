@@ -374,6 +374,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <RichTextDisplay content={projectData.description} />
               </div>
 
+              {/* Owner-only: hidden notice */}
+              {isOwner && projectData.hidden && (
+                <div className="border-border bg-muted text-foreground mb-3 rounded-lg border px-4 py-3 text-sm">
+                  <strong>This listing is hidden.</strong> It&apos;s removed from every
+                  public page — only you can see it here. Edit it and uncheck &quot;Hide
+                  from the site&quot; to publish it again.
+                </div>
+              )}
+
               {/* Edit button pour owners */}
               {isOwner && (
                 <div className="flex flex-wrap items-center gap-3">
@@ -388,6 +397,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     initialDescription={projectData.description}
                     initialCategories={projectData.categories}
                     initialAvailability={projectData.availability}
+                    initialHidden={projectData.hidden}
                     isOwner={isOwner}
                   />
                   <DeleteProjectButton projectId={projectData.id} />

@@ -51,6 +51,7 @@ interface EditProjectFormProps {
   initialDescription: string
   initialCategories: { id: string; name: string }[]
   initialAvailability: string
+  initialHidden: boolean
   onUpdate: () => void
   onCancel: () => void
 }
@@ -66,6 +67,7 @@ export function EditProjectForm({
   initialDescription,
   initialCategories,
   initialAvailability,
+  initialHidden,
   onUpdate,
   onCancel,
 }: EditProjectFormProps) {
@@ -85,6 +87,7 @@ export function EditProjectForm({
     initialCategories.map((cat) => cat.id),
   )
   const [availability, setAvailability] = useState(initialAvailability)
+  const [hidden, setHidden] = useState(initialHidden)
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -130,6 +133,7 @@ export function EditProjectForm({
         description,
         categories: selectedCategories,
         availability,
+        hidden,
       })
 
       if (result.success) {
@@ -233,6 +237,23 @@ export function EditProjectForm({
           Coming soon, Testing, or Available — independent of the Website URL.
         </p>
       </div>
+
+      <label className="flex cursor-pointer items-start gap-3 rounded-lg border p-3">
+        <input
+          type="checkbox"
+          checked={hidden}
+          onChange={(event) => setHidden(event.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0"
+        />
+        <span className="space-y-0.5">
+          <span className="block text-sm font-medium">Hide from the site</span>
+          <span className="text-muted-foreground block text-xs">
+            Removes this listing from every public page (carousel, solutions, explore,
+            search, and its public URL). You keep full access here — uncheck to publish
+            it again.
+          </span>
+        </span>
+      </label>
 
       <ImageUploadInput
         id="edit-logo"
