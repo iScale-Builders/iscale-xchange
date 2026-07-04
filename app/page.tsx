@@ -29,8 +29,8 @@ export default async function Home() {
   const { userId } = await auth()
   const isAuthenticated = !!userId
 
-  // Carousel rail: live/testing apps (not "coming soon"), minus PromoteFlow (manually excluded).
-  const featured = projects.filter((p) => p.availability !== "coming_soon" && p.slug !== "promoteflow")
+  // Carousel rail: live/testing apps (not "coming soon").
+  const featured = projects.filter((p) => p.availability !== "coming_soon")
 
   const heroProps = (p: ExploreProject) => ({
     slug: p.slug,
