@@ -29,21 +29,6 @@ interface RichTextEditorProps {
   className?: string
 }
 
-interface RichTextDisplayProps {
-  content: string
-  className?: string
-}
-
-// Composant pour afficher le contenu riche formaté
-export function RichTextDisplay({ content, className }: RichTextDisplayProps) {
-  return (
-    <div
-      className={cn(RICH_TEXT_STYLES, className)}
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
-  )
-}
-
 // Composant éditeur
 export function RichTextEditor({
   content,

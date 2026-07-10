@@ -50,6 +50,7 @@ export function CardImageCycler({
   }
 
   const safeIndex = index % images.length
+  const activeSrc = images[safeIndex]
   const move = (e: React.MouseEvent, delta: number) => {
     e.preventDefault()
     e.stopPropagation()
@@ -58,37 +59,27 @@ export function CardImageCycler({
 
   return (
     <>
-      {images.map((src, i) => {
-        const active = i === safeIndex
-
-        return (
-          <div
-            key={i}
-            aria-hidden={!active}
-            className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${
-              active ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <img
-              src={src}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
-            />
-            <div
-              className={`border-border/70 bg-background/92 absolute overflow-hidden rounded-lg border shadow-sm ${
-                compact ? "inset-2" : "inset-3"
-              }`}
-            >
-              <img
-                src={src}
-                alt={`${name} preview ${i + 1}`}
-                className="h-full w-full object-contain"
-              />
-            </div>
-          </div>
-        )
-      })}
+      <div key={safeIndex} className="absolute inset-0 transition-opacity duration-500 ease-in-out">
+        <img
+          src={activeSrc}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
+        />
+        <div
+          className={`border-border/70 bg-background/92 absolute overflow-hidden rounded-lg border shadow-sm ${
+            compact ? "inset-2" : "inset-3"
+          }`}
+        >
+          <img
+            src={activeSrc}
+            alt={`${name} preview ${safeIndex + 1}`}
+            loading="lazy"
+            className="h-full w-full object-contain"
+          />
+        </div>
+      </div>
       {images.length > 1 && (
         <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 [filter:drop-shadow(0_1px_2px_rgb(0_0_0_/_0.55))]">
           <button

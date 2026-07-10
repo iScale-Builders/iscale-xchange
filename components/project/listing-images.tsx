@@ -53,6 +53,9 @@ export function ListingImages({ banner, images, name }: ListingImagesProps) {
           <img
             src={banner}
             alt={`${name} - Product Image`}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />
         </div>
@@ -71,6 +74,8 @@ export function ListingImages({ banner, images, name }: ListingImagesProps) {
               <img
                 src={image}
                 alt={`${name} image ${index + 1}`}
+                loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover"
               />
             </button>
@@ -124,6 +129,7 @@ export function ListingImages({ banner, images, name }: ListingImagesProps) {
           <img
             src={all[openIndex]}
             alt={`${name} full size`}
+            decoding="async"
             className="max-h-[90vh] max-w-[92vw] rounded-lg object-contain shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />

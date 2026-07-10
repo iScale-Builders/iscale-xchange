@@ -54,6 +54,7 @@ export function ExploreHeroCard({
   const url = `/projects/${slug}`
   const [imageIndex, setImageIndex] = useState(0)
   const activeIndex = imageIndex % Math.max(images.length, 1)
+  const activeImage = images[activeIndex]
 
   // If this card lives inside an autoplay carousel, phase-lock its image swap to the
   // carousel beat: while this slide is the active one, change the image once at the
@@ -85,36 +86,29 @@ export function ExploreHeroCard({
       {/* image fit top-to-bottom, centered, with a blurred copy of itself behind */}
       <div className={`relative w-full overflow-hidden rounded-xl ${heightClassName}`}>
         <SubmissionBadge type={submissionType} className="absolute top-3 left-3 z-10" />
-        {images.length > 0 ? (
-          images.map((src, index) => {
-            const active = index === activeIndex
-            return (
-              <div
-                key={`${src}-${index}`}
-                aria-hidden={!active}
-                className={`absolute inset-0 transition-opacity duration-[1200ms] ease-in-out ${
-                  active ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                {/* blurred fill behind */}
-                <img
-                  src={src}
-                  alt=""
-                  aria-hidden="true"
-                  fetchPriority="low"
-                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-100 blur-sm"
-                />
-                {/* the actual image, centered, fit top-to-bottom */}
-                <img
-                  src={src}
-                  alt={active ? name : ""}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                  className="absolute inset-0 m-auto h-full w-full object-contain"
-                />
-              </div>
-            )
-          })
+        {activeImage ? (
+          <div
+            key={`${activeImage}-${activeIndex}`}
+            className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+          >
+            {/* blurred fill behind */}
+            <img
+              src={activeImage}
+              alt=""
+              aria-hidden="true"
+              fetchPriority="low"
+              loading={activeIndex === 0 ? "eager" : "lazy"}
+              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-100 blur-sm"
+            />
+            {/* the actual image, centered, fit top-to-bottom */}
+            <img
+              src={activeImage}
+              alt={name}
+              loading={activeIndex === 0 ? "eager" : "lazy"}
+              fetchPriority={activeIndex === 0 ? "high" : "auto"}
+              className="absolute inset-0 m-auto h-full w-full object-contain"
+            />
+          </div>
         ) : (
           <ToolThumbnail
             name={name}

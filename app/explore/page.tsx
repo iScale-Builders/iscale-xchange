@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 
-import { auth } from "@clerk/nextjs/server"
-
+import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { ExploreView } from "@/components/explore/explore-view"
 import { AICommandRibbon } from "@/components/shared/ai-command-ribbon"
 import { getExploreProjects } from "@/app/actions/explore"
@@ -14,8 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default async function ExplorePage() {
-  const projects = await getExploreProjects(60)
-  const { userId } = await auth()
+  const userId = await getSyncedCurrentUserId()
+  const projects = await getExploreProjects(60, userId)
   const isAuthenticated = !!userId
   const categoryCount = new Set(
     projects.flatMap((project) => project.categories.map((category) => category.id)),
