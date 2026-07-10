@@ -66,13 +66,7 @@ export function ExploreGridCard({
       {/* Thumbnail */}
       <div className="bg-muted relative aspect-video w-full overflow-hidden rounded-xl">
         <SubmissionBadge type={submissionType} className="absolute bottom-2 left-2 z-20" />
-        <CardImageCycler
-          images={images}
-          name={name}
-          category={categories[0]?.name}
-          slug={slug}
-          autoCycle
-        />
+        <CardImageCycler images={images} name={name} category={categories[0]?.name} slug={slug} />
         <div className="ai-card-scan" aria-hidden="true" />
         <div className="bg-muted/80 text-muted-foreground border-border absolute right-3 bottom-3 left-3 flex items-center justify-between rounded-full border px-3 py-1 text-[10px] font-black tracking-[0.12em] uppercase opacity-0 backdrop-blur-xl transition-opacity duration-300 group-hover:opacity-100">
           <span className="flex items-center gap-1.5">

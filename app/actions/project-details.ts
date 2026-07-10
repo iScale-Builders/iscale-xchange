@@ -1,5 +1,6 @@
 "use server"
 
+import { cache } from "react"
 import { revalidatePath } from "next/cache"
 
 import { db } from "@/drizzle/db"
@@ -15,15 +16,7 @@ import { and, eq, ne, sql } from "drizzle-orm"
 
 import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 
-// Returns the current Clerk userId (or null).
-async function getCurrentUserId() {
-  return getSyncedCurrentUserId()
-}
-
-// Get project by slug
-export async function getProjectBySlug(slug: string) {
-  const viewerId = await getSyncedCurrentUserId()
-
+const getProjectBySlugForViewer = cache(async (slug: string, viewerId: string | null) => {
   // Get project details - Exclure les projets avec le statut payment_pending
   const [projectData] = await db
     .select()
@@ -40,61 +33,49 @@ export async function getProjectBySlug(slug: string) {
     return null
   }
 
-  // Get creator information if available
-  let creator = null
-  if (projectData.createdBy) {
-    const [creatorData] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, projectData.createdBy))
-      .limit(1)
-    creator = creatorData
-  }
-
-  // Get categories
-  const categories = await db
-    .select({
-      id: category.id,
-      name: category.name,
-    })
-    .from(category)
-    .innerJoin(projectToCategory, eq(category.id, projectToCategory.categoryId))
-    .where(eq(projectToCategory.projectId, projectData.id))
-
-  // Get upvote count
-  const [upvoteCount] = await db
-    .select({
-      count: sql`count(*)`,
-    })
-    .from(upvote)
-    .where(eq(upvote.projectId, projectData.id))
+  const [creatorRows, categories, upvoteRows, viewerUpvoteRows] = await Promise.all([
+    projectData.createdBy
+      ? db.select().from(user).where(eq(user.id, projectData.createdBy)).limit(1)
+      : Promise.resolve([]),
+    db
+      .select({
+        id: category.id,
+        name: category.name,
+      })
+      .from(category)
+      .innerJoin(projectToCategory, eq(category.id, projectToCategory.categoryId))
+      .where(eq(projectToCategory.projectId, projectData.id)),
+    db
+      .select({
+        count: sql`count(*)`,
+      })
+      .from(upvote)
+      .where(eq(upvote.projectId, projectData.id)),
+    viewerId
+      ? db
+          .select({ id: upvote.id })
+          .from(upvote)
+          .where(and(eq(upvote.userId, viewerId), eq(upvote.projectId, projectData.id)))
+          .limit(1)
+      : Promise.resolve([]),
+  ])
 
   // Ne plus récupérer les commentaires ici car ils seront gérés par Fuma Comment
 
   return {
     ...projectData,
     categories,
-    upvoteCount: Number(upvoteCount?.count || 0),
-    creator,
+    upvoteCount: Number(upvoteRows[0]?.count || 0),
+    userHasUpvoted: viewerUpvoteRows.length > 0,
+    creator: creatorRows[0] ?? null,
     // Ne plus inclure les commentaires dans l'objet retourné
   }
-}
+})
 
-// Check if a user has upvoted a project
-export async function hasUserUpvoted(projectId: string) {
-  const userId = await getCurrentUserId()
-
-  if (!userId) {
-    return false
-  }
-
-  const userUpvotes = await db
-    .select()
-    .from(upvote)
-    .where(and(eq(upvote.userId, userId), eq(upvote.projectId, projectId)))
-    .limit(1)
-
-  return userUpvotes.length > 0
+// Get project by slug
+export async function getProjectBySlug(slug: string, currentUserId?: string | null) {
+  const viewerId = currentUserId === undefined ? await getSyncedCurrentUserId() : currentUserId
+  return getProjectBySlugForViewer(slug, viewerId)
 }
 
 // Update project details and categories.
@@ -114,7 +95,7 @@ export async function updateProject(
     hidden?: boolean
   },
 ) {
-  const userId = await getCurrentUserId()
+  const userId = await getSyncedCurrentUserId()
 
   if (!userId) {
     return { success: false, error: "Authentication required" }

@@ -4,7 +4,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { auth } from "@clerk/nextjs/server"
 import { RiGithubFill, RiHashtag, RiTwitterFill, RiVipCrownLine } from "@remixicon/react"
 import { format } from "date-fns"
 
@@ -14,7 +13,7 @@ import { breadcrumbSchema, softwareApplicationSchema } from "@/lib/seo/schema"
 import { slugify } from "@/lib/seo/slug"
 import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
-import { RichTextDisplay } from "@/components/ui/rich-text-editor"
+import { RichTextDisplay } from "@/components/ui/rich-text-display"
 import { galleryFor, thumbnailFor } from "@/components/explore/explore-view"
 import { DeleteProjectButton } from "@/components/project/delete-project-button"
 import { EditButton } from "@/components/project/edit-button"
@@ -25,7 +24,7 @@ import { UpvoteButton } from "@/components/project/upvote-button"
 import { JsonLd } from "@/components/seo/json-ld"
 import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 import { ReadyPixlSponsorLink } from "@/components/sponsor/readypixl-sponsor-link"
-import { getProjectBySlug, hasUserUpvoted } from "@/app/actions/project-details"
+import { getProjectBySlug } from "@/app/actions/project-details"
 
 export const dynamic = "force-dynamic"
 
@@ -86,16 +85,14 @@ export async function generateMetadata(
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params
-  const projectData = await getProjectBySlug(slug)
+  const currentUserId = await getSyncedCurrentUserId()
+  const projectData = await getProjectBySlug(slug, currentUserId)
 
   if (!projectData) {
     notFound()
   }
 
-  const { userId: clerkUserId } = await auth()
-  const currentUserId = clerkUserId ? await getSyncedCurrentUserId() : null
-
-  const hasUpvoted = currentUserId ? await hasUserUpvoted(projectData.id) : false
+  const hasUpvoted = currentUserId ? projectData.userHasUpvoted : false
 
   const scheduledDate = projectData.scheduledLaunchDate
     ? new Date(projectData.scheduledLaunchDate)
@@ -377,9 +374,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {/* Owner-only: hidden notice */}
               {isOwner && projectData.hidden && (
                 <div className="border-border bg-muted text-foreground mb-3 rounded-lg border px-4 py-3 text-sm">
-                  <strong>This listing is hidden.</strong> It&apos;s removed from every
-                  public page — only you can see it here. Edit it and uncheck &quot;Hide
-                  from the site&quot; to publish it again.
+                  <strong>This listing is hidden.</strong> It&apos;s removed from every public page
+                  — only you can see it here. Edit it and uncheck &quot;Hide from the site&quot; to
+                  publish it again.
                 </div>
               )}
 

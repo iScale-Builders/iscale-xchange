@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 
-import { auth } from "@clerk/nextjs/server"
-
+import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { ExploreBrowser } from "@/components/explore/explore-browser"
 import { ExploreHeroCard } from "@/components/explore/explore-hero-card"
 import { galleryFor } from "@/components/explore/explore-view"
@@ -18,16 +17,17 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
+  const userId = await getSyncedCurrentUserId()
+  const isAuthenticated = !!userId
+
   // Degrade gracefully if the data layer is unavailable instead of 500-ing the
   // homepage; app/error.tsx is the backstop for any other render failure.
   let projects: ExploreProject[] = []
   try {
-    projects = await getExploreProjects(60)
+    projects = await getExploreProjects(60, userId)
   } catch (error) {
     console.error("Home: failed to load explore projects:", error)
   }
-  const { userId } = await auth()
-  const isAuthenticated = !!userId
 
   // Carousel rail: live/testing apps (not "coming soon").
   const featured = projects.filter((p) => p.availability !== "coming_soon")

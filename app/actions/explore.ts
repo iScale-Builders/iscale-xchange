@@ -45,8 +45,11 @@ export interface ExploreProject {
  *
  * Used by the magazine-style /explore browse experience.
  */
-export async function getExploreProjects(limit = 60): Promise<ExploreProject[]> {
-  const userId = await getSyncedCurrentUserId()
+export async function getExploreProjects(
+  limit = 60,
+  currentUserId?: string | null,
+): Promise<ExploreProject[]> {
+  const userId = currentUserId === undefined ? await getSyncedCurrentUserId() : currentUserId
 
   const rows = await db
     .select({

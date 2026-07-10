@@ -1,13 +1,20 @@
 "use client"
 
 import { useState } from "react"
+import dynamic from "next/dynamic"
 
 import { RiPencilLine } from "@remixicon/react"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-import { EditProjectForm } from "./edit-project-form"
+const EditProjectForm = dynamic(
+  () => import("./edit-project-form").then((mod) => mod.EditProjectForm),
+  {
+    ssr: false,
+    loading: () => <div className="text-muted-foreground py-8 text-center text-sm">Loading...</div>,
+  },
+)
 
 interface EditButtonProps {
   projectId: string
