@@ -41,7 +41,13 @@ const getSearchResults = unstable_cache(
           type: sql<"project">`'project'`.as("type"),
         })
         .from(project)
-        .where(and(ilike(project.name, `%${query}%`), eq(project.hidden, false)))
+        .where(
+          and(
+            ilike(project.name, `%${query}%`),
+            eq(project.hidden, false),
+            eq(project.approvalStatus, "approved"),
+          ),
+        )
         .limit(limit)
 
       // Rechercher dans les catégories

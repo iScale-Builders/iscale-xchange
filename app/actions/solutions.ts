@@ -57,6 +57,7 @@ async function fetchSolutions(limit: number): Promise<SolutionListItem[]> {
       and(
         eq(projectTable.submissionType, submissionType.SOLUTION),
         eq(projectTable.hidden, false),
+        eq(projectTable.approvalStatus, "approved"),
       ),
     )
     .groupBy(projectTable.id)
