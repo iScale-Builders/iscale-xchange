@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { db } from "@/drizzle/db"
 import {
+  approvalStatus as approvalStatusEnum,
   category,
   launchStatus as launchStatusEnum,
   project,
@@ -13,7 +14,7 @@ import {
 } from "@/drizzle/db/schema"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { addDays, format } from "date-fns"
-import { and, desc, eq, gte, inArray, sql } from "drizzle-orm"
+import { and, desc, eq, gte, sql } from "drizzle-orm"
 
 import { DATE_FORMAT, LAUNCH_SETTINGS } from "@/lib/constants"
 import { getLocalUser } from "@/lib/ensure-user"
@@ -248,16 +249,16 @@ export async function deleteUserAction(userId: string) {
 }
 
 // ---------------------------------------------------------------------------
-// Project submission moderation (curation queue).
+// Project submission moderation (approval queue).
 //
-// Newly submitted FREE tools default to launchStatus = "scheduled" and are
-// therefore invisible on the homepage (getExploreProjects filters for
-// "launched" only). The admin approves a submission, which flips it to
-// "launched" and stamps scheduledLaunchDate = now so it appears immediately.
+// Every new post (problem or solution) is inserted with
+// approvalStatus = "pending" and is excluded from all public surfaces until an
+// admin approves it here. Approving flips approvalStatus to "approved";
+// rejecting deletes the post.
 // ---------------------------------------------------------------------------
 
-// Pending submissions = anything not yet live (scheduled / payment_*),
-// newest first. Includes the creator name for display.
+// Pending submissions = posts awaiting approval, newest first.
+// Includes the creator name for display.
 export async function getPendingProjects() {
   await checkAdminAccess()
 
@@ -270,6 +271,7 @@ export async function getPendingProjects() {
       websiteUrl: project.websiteUrl,
       launchStatus: project.launchStatus,
       launchType: project.launchType,
+      submissionType: project.submissionType,
       featuredOnHomepage: project.featuredOnHomepage,
       scheduledLaunchDate: project.scheduledLaunchDate,
       createdAt: project.createdAt,
@@ -277,25 +279,20 @@ export async function getPendingProjects() {
     })
     .from(project)
     .leftJoin(user, eq(user.id, project.createdBy))
-    .where(
-      inArray(project.launchStatus, [
-        launchStatusEnum.SCHEDULED,
-        launchStatusEnum.PAYMENT_PENDING,
-        launchStatusEnum.PAYMENT_FAILED,
-      ]),
-    )
+    .where(eq(project.approvalStatus, approvalStatusEnum.PENDING))
     .orderBy(desc(project.createdAt))
 
   return rows
 }
 
-// Approve a submission -> make it live on the homepage immediately.
+// Approve a submission -> make it live on every public surface immediately.
 export async function approveProject(projectId: string) {
   await checkAdminAccess()
   try {
     await db
       .update(project)
       .set({
+        approvalStatus: approvalStatusEnum.APPROVED,
         launchStatus: launchStatusEnum.LAUNCHED,
         scheduledLaunchDate: new Date(),
         updatedAt: new Date(),
@@ -304,6 +301,8 @@ export async function approveProject(projectId: string) {
 
     revalidatePath("/")
     revalidatePath("/explore")
+    revalidatePath("/solutions")
+    revalidatePath("/problems")
     return { success: true }
   } catch (error) {
     console.error("Error approving project:", error)
@@ -311,7 +310,7 @@ export async function approveProject(projectId: string) {
   }
 }
 
-// Reject a submission. The launchStatus enum has no "rejected" value, so the
+// Reject a submission. There is no "rejected" state to park it in, so the
 // simplest correct behaviour is to delete the row and its category links.
 export async function rejectProject(projectId: string) {
   await checkAdminAccess()
@@ -321,6 +320,8 @@ export async function rejectProject(projectId: string) {
 
     revalidatePath("/")
     revalidatePath("/explore")
+    revalidatePath("/solutions")
+    revalidatePath("/problems")
     return { success: true }
   } catch (error) {
     console.error("Error rejecting project:", error)

@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { RiCalendarLine, RiCheckLine, RiMessage2Line } from "@remixicon/react"
+import { RiCalendarLine, RiCheckLine, RiMessage2Line, RiTimeLine } from "@remixicon/react"
 import { formatDistance } from "date-fns"
 
 // Function to strip HTML tags from text
@@ -18,6 +18,7 @@ interface DashboardProjectCardProps {
   logoUrl: string
   description: string
   launchStatus: string
+  approvalStatus?: string | null
   scheduledLaunchDate?: string | Date | null
   createdAt: string | Date
   commentCount?: number | string | null
@@ -30,6 +31,7 @@ export function DashboardProjectCard({
   logoUrl,
   description,
   launchStatus,
+  approvalStatus,
   scheduledLaunchDate,
   createdAt,
   commentCount,
@@ -38,6 +40,15 @@ export function DashboardProjectCard({
   const projectPageUrl = `/projects/${slug}`
 
   const renderStatusBadge = () => {
+    // Awaiting moderation trumps every launch-status label.
+    if (approvalStatus === "pending") {
+      return (
+        <span className="flex items-center gap-1 text-amber-600 dark:text-amber-500">
+          <RiTimeLine className="h-3.5 w-3.5" />
+          Pending approval
+        </span>
+      )
+    }
     if (launchStatus === "scheduled" && scheduledLaunchDate) {
       return (
         <span className="flex items-center gap-1 text-blue-600">

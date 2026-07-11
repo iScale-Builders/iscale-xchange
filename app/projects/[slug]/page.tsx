@@ -380,6 +380,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </div>
               )}
 
+              {/* Owner-only: awaiting-approval notice */}
+              {isOwner && projectData.approvalStatus === "pending" && (
+                <div className="border-border bg-muted text-foreground mb-3 rounded-lg border px-4 py-3 text-sm">
+                  <strong>Pending approval.</strong> Your post is in the review queue —
+                  only you can see it right now. It appears across the site as soon as
+                  an admin approves it.
+                </div>
+              )}
+
               {/* Edit button pour owners */}
               {isOwner && (
                 <div className="flex flex-wrap items-center gap-3">

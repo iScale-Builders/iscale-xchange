@@ -49,6 +49,15 @@ export const problemStatus = {
 
 export type ProblemStatus = (typeof problemStatus)[keyof typeof problemStatus]
 
+// Moderation: new submissions start "pending" and only reach public surfaces
+// once an admin approves them from the admin dashboard.
+export const approvalStatus = {
+  PENDING: "pending",
+  APPROVED: "approved",
+} as const
+
+export type ApprovalStatus = (typeof approvalStatus)[keyof typeof approvalStatus]
+
 // Ajouter de nouveaux enums pour les projets tech
 export const pricingType = {
   FREE: "free",
@@ -146,6 +155,9 @@ export const project = pgTable(
     // Hidden/unpublished: excluded from every public surface; only the owner
     // (and admins) can see and edit it.
     hidden: boolean("hidden").notNull().default(false),
+    // Moderation state: "pending" until an admin approves. Existing rows were
+    // grandfathered "approved" when the column was added.
+    approvalStatus: text("approval_status").notNull().default(approvalStatus.APPROVED),
     problemStatus: text("problem_status"),
     problemSolved: text("problem_solved"),
     featuredOnHomepage: boolean("featured_on_homepage").default(false),

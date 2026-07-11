@@ -82,6 +82,7 @@ export async function getExploreProjects(
         ne(projectTable.launchStatus, launchStatus.PAYMENT_PENDING),
         eq(projectTable.submissionType, submissionType.SOLUTION),
         eq(projectTable.hidden, false),
+        eq(projectTable.approvalStatus, "approved"),
       ),
     )
     .groupBy(projectTable.id, userTable.id)

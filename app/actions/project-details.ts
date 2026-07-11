@@ -14,7 +14,7 @@ import {
 } from "@/drizzle/db/schema"
 import { and, eq, ne, sql } from "drizzle-orm"
 
-import { getSyncedCurrentUserId } from "@/lib/ensure-user"
+import { getLocalUser, getSyncedCurrentUserId } from "@/lib/ensure-user"
 
 const getProjectBySlugForViewer = cache(async (slug: string, viewerId: string | null) => {
   // Get project details - Exclure les projets avec le statut payment_pending
@@ -28,9 +28,14 @@ const getProjectBySlugForViewer = cache(async (slug: string, viewerId: string | 
     return null
   }
 
-  // Hidden listings are visible only to their owner (for preview/editing).
-  if (projectData.hidden && projectData.createdBy !== viewerId) {
-    return null
+  // Hidden or not-yet-approved listings are visible only to their owner (for
+  // preview/editing) and to admins (to review items in the approval queue).
+  if (projectData.hidden || projectData.approvalStatus !== "approved") {
+    const isOwner = viewerId !== null && projectData.createdBy === viewerId
+    const viewer = viewerId ? await getLocalUser(viewerId) : null
+    if (!isOwner && viewer?.role !== "admin") {
+      return null
+    }
   }
 
   const [creatorRows, categories, upvoteRows, viewerUpvoteRows] = await Promise.all([

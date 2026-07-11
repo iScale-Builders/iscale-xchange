@@ -58,6 +58,7 @@ type PendingProject = {
   websiteUrl: string | null
   launchStatus: string
   launchType: string | null
+  submissionType?: string | null
   featuredOnHomepage: boolean | null
   scheduledLaunchDate?: Date | string | null
   createdAt?: string | Date | null
@@ -186,6 +187,8 @@ export default function AdminDashboard() {
   }
 
   const handleReject = async (id: string) => {
+    // Rejecting permanently deletes the post — make a misclick recoverable.
+    if (!window.confirm("Reject this post? It will be permanently deleted.")) return
     setPendingActionId(`reject-${id}`)
     try {
       const res = await rejectProject(id)
@@ -402,7 +405,7 @@ export default function AdminDashboard() {
             <div className="text-muted-foreground py-4 text-center text-sm">Loading…</div>
           ) : pendingProjects.length === 0 ? (
             <div className="text-muted-foreground py-4 text-center text-sm">
-              No pending submissions. New tools awaiting approval will appear here.
+              No pending submissions. New posts awaiting your approval will appear here.
             </div>
           ) : (
             <div className="space-y-2">
@@ -422,7 +425,7 @@ export default function AdminDashboard() {
                         {p.name}
                       </a>
                       <Badge variant="outline" className="text-xs capitalize">
-                        {p.launchStatus}
+                        {p.submissionType ?? p.launchStatus}
                       </Badge>
                       {p.featuredOnHomepage && (
                         <Badge variant="secondary" className="text-xs">

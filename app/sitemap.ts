@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 
 import { db } from "@/drizzle/db"
 import { blogArticle, category, project, seoArticle } from "@/drizzle/db/schema"
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 
 import { slugify } from "@/lib/seo/slug"
 import { getComparePairs } from "@/app/actions/projects"
@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           logoUrl: project.logoUrl,
         })
         .from(project)
-        .where(eq(project.hidden, false)),
+        .where(and(eq(project.hidden, false), eq(project.approvalStatus, "approved"))),
       db
         .select({
           slug: blogArticle.slug,

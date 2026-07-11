@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { db } from "@/drizzle/db"
 import {
+  approvalStatus,
   category as categoryTable,
   fumaComments,
   launchStatus,
@@ -300,8 +301,10 @@ export async function submitProject(projectData: ProjectSubmissionData) {
       .insert(projectTable)
       .values({
         id: crypto.randomUUID(),
-        // New submissions are live immediately (launch scheduling retired).
+        // Launch scheduling is retired; public visibility is controlled by
+        // approvalStatus: every new post waits in the admin approval queue.
         launchStatus: launchStatus.LAUNCHED,
+        approvalStatus: approvalStatus.PENDING,
         // Submitted with a live URL → available by default (owner can change it later).
         availability: "available",
         // Utiliser les variables déstructurées de projectData
@@ -421,6 +424,7 @@ export async function getProjectsByCategory(
   const queryConditions = and(
     eq(projectToCategory.categoryId, categoryId),
     eq(projectTable.hidden, false),
+    eq(projectTable.approvalStatus, approvalStatus.APPROVED),
     or(
       eq(projectTable.launchStatus, "scheduled"),
       eq(projectTable.launchStatus, "ongoing"),
@@ -544,6 +548,7 @@ export async function getAllProjectSlugs() {
       .where(
         and(
           eq(projectTable.hidden, false),
+          eq(projectTable.approvalStatus, approvalStatus.APPROVED),
           or(
             eq(projectTable.launchStatus, "scheduled"),
             eq(projectTable.launchStatus, "ongoing"),

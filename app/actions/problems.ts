@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { db } from "@/drizzle/db"
 import {
+  approvalStatus,
   category as categoryTable,
   fumaComments,
   launchStatus,
@@ -13,7 +14,7 @@ import {
   submissionType,
   upvote,
 } from "@/drizzle/db/schema"
-import { desc, eq, inArray, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, sql } from "drizzle-orm"
 
 import { ensureLocalUser } from "@/lib/ensure-user"
 
@@ -92,6 +93,8 @@ export async function submitProblem(data: ProblemSubmission) {
         logoUrl,
         pricing: "free",
         launchStatus: launchStatus.LAUNCHED,
+        // Every new post waits in the admin approval queue before going public.
+        approvalStatus: approvalStatus.PENDING,
         submissionType: submissionType.PROBLEM,
         problemStatus: problemStatusEnum.OPEN,
         createdBy: localUser.id,
@@ -155,7 +158,13 @@ async function fetchProblems(limit: number): Promise<ProblemListItem[]> {
     .from(projectTable)
     .leftJoin(upvote, eq(upvote.projectId, projectTable.id))
     .leftJoin(fumaComments, sql`"fuma_comments"."page"::text = ${projectTable.id}`)
-    .where(eq(projectTable.submissionType, submissionType.PROBLEM))
+    .where(
+      and(
+        eq(projectTable.submissionType, submissionType.PROBLEM),
+        eq(projectTable.hidden, false),
+        eq(projectTable.approvalStatus, approvalStatus.APPROVED),
+      ),
+    )
     .groupBy(projectTable.id)
     .orderBy(desc(sql`count(distinct ${upvote.id})`), desc(projectTable.createdAt))
     .limit(limit)
