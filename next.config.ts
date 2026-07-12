@@ -19,9 +19,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   /* config options here */
 
-  // Don't fail the production build on lint/type noise (CI type-checks separately).
+  // TypeScript errors DO fail the build — the code type-checks clean and a type
+  // error is a real defect worth blocking a deploy over. ESLint stays
+  // non-blocking (it also passes clean; enforce it in CI) so a trivial lint nit
+  // can't wedge a manual deploy.
   eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
+  typescript: { ignoreBuildErrors: false },
 
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }]
