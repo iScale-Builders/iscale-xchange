@@ -14,12 +14,10 @@ export default function TermsOfServicePage() {
       <div className="mx-auto max-w-4xl px-4">
         <div className="foundry-panel rounded-2xl p-6 sm:p-8">
           <p className="foundry-kicker mb-3">Builder agreement</p>
-          <h1 className="font-heading mb-6 text-4xl font-black text-foreground sm:text-5xl">
+          <h1 className="font-heading text-foreground mb-6 text-4xl font-black sm:text-5xl">
             Terms of Service
           </h1>
-          <p className="text-muted-foreground mb-6">
-            Last updated: June 30, 2026
-          </p>
+          <p className="text-muted-foreground mb-6">Last updated: June 30, 2026</p>
 
           <div className="space-y-6">
             <section>
@@ -77,8 +75,8 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="mb-3 text-xl font-semibold">4. Intellectual Property</h2>
               <p className="mb-3">
-                Open-Launch is an open source project licensed under the Open-Launch License. The
-                source code is available on{" "}
+                iScaleXchange is built on the open-source Open-Launch project and distributed under
+                the Open-Launch License. The source code is available on{" "}
                 <a
                   href="https://github.com/iScale-Builders/iscale-xchange"
                   className="text-primary hover:underline"

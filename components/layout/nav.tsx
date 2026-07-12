@@ -10,7 +10,6 @@ import {
   RiHomeLine,
   RiLayoutGridLine,
   RiLoginBoxLine,
-  RiMedalLine,
   RiMenuLine,
   RiTeamLine,
   RiUserAddLine,

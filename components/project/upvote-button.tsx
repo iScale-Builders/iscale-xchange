@@ -73,6 +73,10 @@ export function UpvoteButton({
         // Annuler la mise à jour optimiste en cas d'erreur
         updateOptimisticState(optimisticState.upvoted)
         toast.error(response.message)
+      } else {
+        // Sync the server-rendered count so the optimistic value doesn't snap
+        // back to the stale prop once the transition resolves.
+        router.refresh()
       }
     })
   }

@@ -111,7 +111,11 @@ export function ExploreView({ projects, isAuthenticated = false }: ExploreViewPr
                   Featured solution
                 </span>
                 <span className="border-border bg-muted text-foreground rounded-full border px-3 py-1 text-xs font-black shadow-[0_0_24px_rgb(0_229_255_/_0.22)] backdrop-blur-xl">
-                  {toolStatusLabel(featured.launchStatus, featured.websiteUrl)}
+                  {toolStatusLabel(
+                    featured.launchStatus,
+                    featured.websiteUrl,
+                    featured.availability,
+                  )}
                 </span>
               </div>
             </div>
@@ -207,6 +211,7 @@ export function ExploreView({ projects, isAuthenticated = false }: ExploreViewPr
                 description={p.description}
                 images={galleryFor(p)}
                 launchStatus={p.launchStatus}
+                availability={p.availability}
                 websiteUrl={p.websiteUrl}
                 upvoteCount={p.upvoteCount}
                 category={p.categories[0]?.name}
@@ -234,6 +239,7 @@ export function ExploreView({ projects, isAuthenticated = false }: ExploreViewPr
                 description={p.description}
                 images={galleryFor(p)}
                 launchStatus={p.launchStatus}
+                availability={p.availability}
                 websiteUrl={p.websiteUrl}
                 upvoteCount={p.upvoteCount}
                 commentCount={p.commentCount}

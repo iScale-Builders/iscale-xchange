@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { RiAddLine, RiCheckLine, RiCloseLine, RiHashtag, RiLoader4Line } from "@remixicon/react"
 import { toast } from "sonner"
 
+import { AVAILABILITY_OPTIONS } from "@/lib/tool-status"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +21,6 @@ import {
 } from "@/components/ui/select"
 import { updateProject } from "@/app/actions/project-details"
 import { getAllCategories } from "@/app/actions/projects"
-import { AVAILABILITY_OPTIONS } from "@/lib/tool-status"
 
 import { ImageUploadInput } from "./image-upload-input"
 
@@ -248,9 +248,8 @@ export function EditProjectForm({
         <span className="space-y-0.5">
           <span className="block text-sm font-medium">Hide from the site</span>
           <span className="text-muted-foreground block text-xs">
-            Removes this listing from every public page (carousel, solutions, explore,
-            search, and its public URL). You keep full access here — uncheck to publish
-            it again.
+            Removes this listing from every public page (carousel, solutions, explore, search, and
+            its public URL). You keep full access here — uncheck to publish it again.
           </span>
         </span>
       </label>
@@ -305,7 +304,7 @@ export function EditProjectForm({
 
       <div className="space-y-2">
         <label className="text-sm font-medium">
-          Categories <span className="text-muted-foreground text-xs">(maximum 3)</span>
+          Categories <span className="text-muted-foreground text-xs">(maximum 5)</span>
         </label>
 
         {/* Selected categories */}

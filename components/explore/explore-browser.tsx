@@ -107,6 +107,7 @@ export function ExploreBrowser({ projects, isAuthenticated = false }: ExploreBro
               description={p.description}
               images={galleryFor(p)}
               launchStatus={p.launchStatus}
+              availability={p.availability}
               websiteUrl={p.websiteUrl}
               submissionType={p.submissionType}
               upvoteCount={p.upvoteCount}
@@ -139,7 +140,7 @@ function CategoryChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+        "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
         active
           ? "text-primary-foreground border-cyan-200/45 bg-cyan-200 shadow-[0_0_24px_rgb(0_229_255_/_0.22)]"
           : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border-cyan-100/16",

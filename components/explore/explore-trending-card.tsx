@@ -14,6 +14,7 @@ interface ExploreTrendingCardProps {
   description: string
   images: string[]
   launchStatus: string
+  availability?: string | null
   websiteUrl?: string | null
   upvoteCount: number
   category?: string
@@ -34,6 +35,7 @@ export function ExploreTrendingCard({
   description,
   images,
   launchStatus,
+  availability,
   websiteUrl,
   upvoteCount,
   category,
@@ -54,7 +56,7 @@ export function ExploreTrendingCard({
       <div className="bg-muted relative aspect-[16/9] w-full overflow-hidden rounded-xl">
         <CardImageCycler images={images} name={name} category={category} slug={slug} compact />
         <div className="border-border bg-background/80 text-muted-foreground absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[11px] font-semibold backdrop-blur">
-          {toolStatusLabel(launchStatus, websiteUrl)}
+          {toolStatusLabel(launchStatus, websiteUrl, availability)}
         </div>
         {/* Upvote (works for coming-soon too) */}
         <UpvoteButton

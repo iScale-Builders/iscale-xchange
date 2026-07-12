@@ -159,7 +159,7 @@ export default async function CategoryLandingPage({
 
         <header className="scroll-live mb-8 flex flex-col gap-3">
           <p className="foundry-kicker">Best {lower}</p>
-          <h1 className="font-heading text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+          <h1 className="font-heading text-foreground text-4xl font-black tracking-tight sm:text-5xl">
             Best {phrase} ({YEAR})
           </h1>
           <p className="text-muted-foreground max-w-2xl text-base sm:text-lg">
@@ -199,6 +199,7 @@ export default async function CategoryLandingPage({
                 upvoteCount={project.upvoteCount ?? 0}
                 commentCount={project.commentCount ?? 0}
                 launchStatus={project.launchStatus}
+                availability={project.availability}
                 launchType={project.launchType}
                 dailyRanking={project.dailyRanking}
                 index={index}
@@ -212,7 +213,7 @@ export default async function CategoryLandingPage({
 
         {/* FAQ — rendered for users and emitted as FAQPage schema above */}
         <section className="mb-12 max-w-3xl">
-          <h2 className="font-heading mb-5 text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="font-heading text-foreground mb-5 text-2xl font-bold sm:text-3xl">
             {phrase} — frequently asked questions
           </h2>
           <div className="space-y-5">

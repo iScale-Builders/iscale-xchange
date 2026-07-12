@@ -5,8 +5,9 @@
 [![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://reactjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)](https://www.typescriptlang.org)
 
-iScaleXchange is a public directory for AI builder tools, workflows, and launch
-experiments. The live site is [iscalexchange.com](https://iscalexchange.com).
+iScaleXchange is a two-way marketplace where people post business problems and
+share the solutions that solve them. The live site is
+[iscalexchange.com](https://iscalexchange.com).
 
 > Built on [Open-Launch](https://open-launch.com) and distributed under the
 > Open-Launch License. iScaleXchange retains the required visible
@@ -25,8 +26,8 @@ experiments. The live site is [iscalexchange.com](https://iscalexchange.com).
 ## Quick Start
 
 ```bash
-git clone https://github.com/iScale-Builders/iscale-builders.git
-cd iscale-builders
+git clone https://github.com/iScale-Builders/iscale-xchange.git
+cd iscale-xchange
 npm install --legacy-peer-deps
 cp .env.example .env
 npm run db:generate
