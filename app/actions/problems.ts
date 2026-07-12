@@ -17,12 +17,10 @@ import {
 import { and, desc, eq, inArray, sql } from "drizzle-orm"
 
 import { ensureLocalUser } from "@/lib/ensure-user"
+import { sanitizeRichText } from "@/lib/sanitize-html"
 
 function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
 
 async function uniqueProblemSlug(name: string): Promise<string> {
@@ -74,13 +72,14 @@ export async function submitProblem(data: ProblemSubmission) {
     // MVP: keep the migration tiny by composing the problem context into the
     // stored description instead of adding a column per field.
     const composed =
-      `${description}` +
+      sanitizeRichText(description) +
       (audience ? `<p><strong>Who has this problem:</strong> ${escapeHtml(audience)}</p>` : "") +
       (tried ? `<p><strong>What they have tried:</strong> ${escapeHtml(tried)}</p>` : "") +
       `<p><strong>Urgency:</strong> ${urgencyLabel}</p>`
 
     const logoUrl =
-      thumbnail?.trim() || `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(title)}`
+      thumbnail?.trim() ||
+      `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(title)}`
 
     const [row] = await db
       .insert(projectTable)

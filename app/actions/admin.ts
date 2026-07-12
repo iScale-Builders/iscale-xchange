@@ -329,24 +329,6 @@ export async function rejectProject(projectId: string) {
   }
 }
 
-// Toggle the homepage "featured" flag on a project.
-export async function toggleFeatured(projectId: string, value: boolean) {
-  await checkAdminAccess()
-  try {
-    await db
-      .update(project)
-      .set({ featuredOnHomepage: value, updatedAt: new Date() })
-      .where(eq(project.id, projectId))
-
-    revalidatePath("/")
-    revalidatePath("/explore")
-    return { success: true }
-  } catch (error) {
-    console.error("Error toggling featured:", error)
-    return { success: false, error: "Failed to update featured flag" }
-  }
-}
-
 // Generic launch-status setter (e.g. ongoing / launched). Validates the value
 // against the launchStatus enum and stamps scheduledLaunchDate when going live.
 export async function setLaunchStatus(projectId: string, status: LaunchStatus) {
@@ -358,8 +340,7 @@ export async function setLaunchStatus(projectId: string, status: LaunchStatus) {
   }
 
   try {
-    const goingLive =
-      status === launchStatusEnum.LAUNCHED || status === launchStatusEnum.ONGOING
+    const goingLive = status === launchStatusEnum.LAUNCHED || status === launchStatusEnum.ONGOING
     await db
       .update(project)
       .set({

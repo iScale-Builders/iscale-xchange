@@ -7,6 +7,10 @@ import { and, eq } from "drizzle-orm"
 import { slugify } from "@/lib/seo/slug"
 import { getComparePairs } from "@/app/actions/projects"
 
+// Refresh hourly so approved posts appear and hidden/deleted ones drop out
+// without waiting for a redeploy.
+export const revalidate = 3600
+
 const siteUrl = process.env.NEXT_PUBLIC_URL || "https://iscalexchange.com"
 
 // Resolve a usable absolute image URL for the image sitemap. Skips uploaded

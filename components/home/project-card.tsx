@@ -27,6 +27,7 @@ interface ProjectCardProps {
   upvoteCount: number
   commentCount: number
   launchStatus: string
+  availability?: string | null
   launchType?: string | null
   dailyRanking?: number | null
   index?: number
@@ -45,6 +46,7 @@ export function ProjectCard({
   upvoteCount,
   commentCount,
   launchStatus,
+  availability,
   index,
   userHasUpvoted,
   categories,
@@ -94,7 +96,7 @@ export function ProjectCard({
                 </h3>
               </Link>
               <span className="border-border bg-muted text-foreground rounded-full border px-2 py-0.5 text-[10px] font-black">
-                {toolStatusLabel(launchStatus, websiteUrl)}
+                {toolStatusLabel(launchStatus, websiteUrl, availability)}
               </span>
             </div>
 
@@ -127,7 +129,7 @@ export function ProjectCard({
           upvoteCount={upvoteCount}
           isAuthenticated={isAuthenticated}
           hasUpvoted={userHasUpvoted}
-          launchStatus="scheduled"
+          launchStatus={launchStatus}
           projectName={name}
         />
       </div>

@@ -7,6 +7,10 @@ import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
 import { getSolutions } from "@/app/actions/solutions"
 
+// Public list must always reflect current moderation state (hidden/approval),
+// so render dynamically instead of serving a stale static cache.
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Solutions",
   description:
@@ -88,7 +92,7 @@ export default async function SolutionsPage() {
                     </span>
                   ))}
                 </div>
-                <h2 className="text-foreground mt-3 text-lg font-black leading-snug group-hover:underline">
+                <h2 className="text-foreground mt-3 text-lg leading-snug font-black group-hover:underline">
                   {s.name}
                 </h2>
                 <p className="text-muted-foreground mt-2 line-clamp-3 text-sm leading-6">

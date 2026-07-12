@@ -11,13 +11,16 @@ import {
   project,
   project as projectTable,
   projectToCategory,
+  submissionType,
   upvote,
 } from "@/drizzle/db/schema"
 import { auth } from "@clerk/nextjs/server"
 import { and, asc, count, desc, eq, inArray, or, sql } from "drizzle-orm"
 
 import { ensureLocalUser } from "@/lib/ensure-user"
+import { sanitizeRichText } from "@/lib/sanitize-html"
 import { slugify } from "@/lib/seo/slug"
+import { isHttpUrl } from "@/lib/validate-url"
 
 // Fonction pour générer un slug unique
 async function generateUniqueSlug(name: string): Promise<string> {
@@ -77,10 +80,14 @@ export async function getTopCategories(limit = 5) {
     .leftJoin(projectToCategory, eq(categoryTable.id, projectToCategory.categoryId))
     .leftJoin(project, eq(projectToCategory.projectId, project.id))
     .where(
-      or(
-        eq(project.launchStatus, "scheduled"),
-        eq(project.launchStatus, "ongoing"),
-        eq(project.launchStatus, "launched"),
+      and(
+        eq(project.hidden, false),
+        eq(project.approvalStatus, approvalStatus.APPROVED),
+        or(
+          eq(project.launchStatus, "scheduled"),
+          eq(project.launchStatus, "ongoing"),
+          eq(project.launchStatus, "launched"),
+        ),
       ),
     )
     .groupBy(categoryTable.id, categoryTable.name)
@@ -105,7 +112,13 @@ export async function getUserUpvotedProjects() {
     })
     .from(upvote)
     .innerJoin(projectTable, eq(upvote.projectId, projectTable.id))
-    .where(eq(upvote.userId, userId))
+    .where(
+      and(
+        eq(upvote.userId, userId),
+        eq(projectTable.hidden, false),
+        eq(projectTable.approvalStatus, approvalStatus.APPROVED),
+      ),
+    )
     .orderBy(desc(upvote.createdAt))
     .limit(10)
 
@@ -125,12 +138,13 @@ export async function getUserCreatedProjects() {
     return []
   }
 
+  // The owner's own management view — return all their posts (no public cap),
+  // so someone with 11+ listings can still see and edit every one.
   const userProjects = await db
     .select()
     .from(projectTable)
     .where(eq(projectTable.createdBy, userId))
     .orderBy(desc(projectTable.createdAt))
-    .limit(10)
 
   return userProjects
 }
@@ -195,18 +209,18 @@ export async function toggleUpvote(projectId: string) {
   if (existingUpvote.length > 0) {
     await db.delete(upvote).where(and(eq(upvote.userId, userId), eq(upvote.projectId, projectId)))
   } else {
-    await db.insert(upvote).values({
-      id: crypto.randomUUID(),
-      userId,
-      projectId,
-      createdAt: new Date(),
-    })
+    await db
+      .insert(upvote)
+      .values({
+        id: crypto.randomUUID(),
+        userId,
+        projectId,
+        createdAt: new Date(),
+      })
+      .onConflictDoNothing()
   }
 
   revalidatePath("/dashboard")
-  // Temporairement commenter la revalidation spécifique au projet
-  // Il faudrait le slug ici pour revalider /projects/{slug}
-  // revalidatePath(`/projects/${projectSlug}`);
 
   return { success: true }
 }
@@ -272,14 +286,6 @@ export async function submitProject(projectData: ProjectSubmissionData) {
     // SECURITY: these values are stored and later rendered on public pages, so
     // validate user-supplied URLs (only http(s) — blocks javascript:/data: in
     // link/image fields) and bound field lengths against oversized payloads.
-    const isHttpUrl = (value: string) => {
-      try {
-        const u = new URL(value)
-        return u.protocol === "http:" || u.protocol === "https:"
-      } catch {
-        return false
-      }
-    }
     const optionalUrls = [logoUrl, productImage, githubUrl, twitterUrl].filter(
       (v): v is string => typeof v === "string" && v.length > 0,
     )
@@ -310,7 +316,7 @@ export async function submitProject(projectData: ProjectSubmissionData) {
         // Utiliser les variables déstructurées de projectData
         name,
         slug,
-        description,
+        description: sanitizeRichText(description),
         problemSolved: problemSolved ?? undefined,
         websiteUrl,
         logoUrl,
@@ -425,6 +431,8 @@ export async function getProjectsByCategory(
     eq(projectToCategory.categoryId, categoryId),
     eq(projectTable.hidden, false),
     eq(projectTable.approvalStatus, approvalStatus.APPROVED),
+    // "Best {category} tools" pages list solutions only — keep problem posts out.
+    eq(projectTable.submissionType, submissionType.SOLUTION),
     or(
       eq(projectTable.launchStatus, "scheduled"),
       eq(projectTable.launchStatus, "ongoing"),
@@ -441,6 +449,7 @@ export async function getProjectsByCategory(
       logoUrl: projectTable.logoUrl,
       websiteUrl: projectTable.websiteUrl,
       launchStatus: projectTable.launchStatus,
+      availability: projectTable.availability,
       launchType: projectTable.launchType,
       dailyRanking: projectTable.dailyRanking,
       scheduledLaunchDate: projectTable.scheduledLaunchDate,
@@ -461,6 +470,7 @@ export async function getProjectsByCategory(
       projectTable.logoUrl,
       projectTable.websiteUrl,
       projectTable.launchStatus,
+      projectTable.availability,
       projectTable.launchType,
       projectTable.dailyRanking,
       projectTable.scheduledLaunchDate,
@@ -588,6 +598,7 @@ export async function deleteOwnProject(projectId: string) {
 
     revalidatePath("/")
     revalidatePath("/explore")
+    revalidatePath("/solutions")
     revalidatePath("/problems")
     revalidatePath("/dashboard")
     return { success: true }

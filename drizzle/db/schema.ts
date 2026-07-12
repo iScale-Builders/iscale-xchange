@@ -8,6 +8,7 @@ import {
   serial,
   text,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core"
 
@@ -155,9 +156,10 @@ export const project = pgTable(
     // Hidden/unpublished: excluded from every public surface; only the owner
     // (and admins) can see and edit it.
     hidden: boolean("hidden").notNull().default(false),
-    // Moderation state: "pending" until an admin approves. Existing rows were
-    // grandfathered "approved" when the column was added.
-    approvalStatus: text("approval_status").notNull().default(approvalStatus.APPROVED),
+    // Moderation state: "pending" until an admin approves. Fail closed — any
+    // insert path that forgets this field stays out of public view, not in it.
+    // (Existing rows were grandfathered "approved" when the column was added.)
+    approvalStatus: text("approval_status").notNull().default(approvalStatus.PENDING),
     problemStatus: text("problem_status"),
     problemSolved: text("problem_solved"),
     featuredOnHomepage: boolean("featured_on_homepage").default(false),
@@ -209,16 +211,24 @@ export const projectToCategory = pgTable(
 )
 
 // Interactions
-export const upvote = pgTable("upvote", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  projectId: text("project_id")
-    .notNull()
-    .references(() => project.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-})
+export const upvote = pgTable(
+  "upvote",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => project.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    // One upvote per user per project — matches the DB unique constraint and
+    // makes the toggle insert idempotent under concurrent clicks.
+    userProjectUnique: unique("upvote_user_project_unique").on(table.userId, table.projectId),
+  }),
+)
 
 // Tables pour Fuma Comment
 export const fumaRoles = pgTable("fuma_roles", {

@@ -17,7 +17,9 @@ const ALT_LIMIT = 12
 const YEAR = 2026
 
 async function loadAlternatives(slug: string) {
-  const tool = await getProjectBySlug(slug)
+  // Force the anonymous view: these ISR pages are shared across all viewers, so
+  // never let an owner/admin's first visit cache a hidden/pending tool.
+  const tool = await getProjectBySlug(slug, null)
   if (!tool) return null
 
   const primaryCategory = tool.categories[0]
@@ -144,7 +146,7 @@ export default async function AlternativesPage({ params }: { params: Promise<{ t
 
         <header className="scroll-live mb-8 flex flex-col gap-3">
           <p className="foundry-kicker">Alternatives to {tool.name}</p>
-          <h1 className="font-heading text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+          <h1 className="font-heading text-foreground text-4xl font-black tracking-tight sm:text-5xl">
             {tool.name} Alternatives ({YEAR})
           </h1>
           <p className="text-muted-foreground max-w-2xl text-base sm:text-lg">
@@ -199,7 +201,7 @@ export default async function AlternativesPage({ params }: { params: Promise<{ t
         )}
 
         <section className="mb-12 max-w-3xl">
-          <h2 className="font-heading mb-5 text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="font-heading text-foreground mb-5 text-2xl font-bold sm:text-3xl">
             {tool.name} alternatives — frequently asked questions
           </h2>
           <div className="space-y-5">

@@ -202,6 +202,7 @@ async function CategoryData({
               upvoteCount={project.upvoteCount ?? 0}
               commentCount={project.commentCount ?? 0}
               launchStatus={project.launchStatus}
+              availability={project.availability}
               launchType={project.launchType}
               dailyRanking={project.dailyRanking}
               index={index}
@@ -273,7 +274,7 @@ export default async function CategoriesPage({
       <div className="foundry-container min-h-screen">
         <div className="scroll-live mb-8 flex flex-col gap-2">
           <p className="foundry-kicker">Constellation filters</p>
-          <h1 className="font-heading text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+          <h1 className="font-heading text-foreground text-4xl font-black tracking-tight sm:text-5xl">
             Categories
           </h1>
 

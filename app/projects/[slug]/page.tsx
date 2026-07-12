@@ -9,6 +9,7 @@ import { format } from "date-fns"
 
 import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { isUpvotingOpen } from "@/lib/launch-utils"
+import { sanitizeRichText } from "@/lib/sanitize-html"
 import { breadcrumbSchema, softwareApplicationSchema } from "@/lib/seo/schema"
 import { slugify } from "@/lib/seo/slug"
 import { toolStatusLabel } from "@/lib/tool-status"
@@ -368,7 +369,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
               {/* Description */}
               <div className="w-full">
-                <RichTextDisplay content={projectData.description} />
+                <RichTextDisplay content={sanitizeRichText(projectData.description)} />
               </div>
 
               {/* Owner-only: hidden notice */}
@@ -383,9 +384,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {/* Owner-only: awaiting-approval notice */}
               {isOwner && projectData.approvalStatus === "pending" && (
                 <div className="border-border bg-muted text-foreground mb-3 rounded-lg border px-4 py-3 text-sm">
-                  <strong>Pending approval.</strong> Your post is in the review queue —
-                  only you can see it right now. It appears across the site as soon as
-                  an admin approves it.
+                  <strong>Pending approval.</strong> Your post is in the review queue — only you can
+                  see it right now. It appears across the site as soon as an admin approves it.
                 </div>
               )}
 

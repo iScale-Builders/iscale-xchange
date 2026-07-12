@@ -17,7 +17,6 @@ import {
   Shield,
   Sparkle,
   Sparkles,
-  Star,
   Tag,
   Trash2,
   Users,
@@ -46,7 +45,6 @@ import {
   getFreeLaunchAvailability,
   getPendingProjects,
   rejectProject,
-  toggleFeatured,
   unbanUserAction,
 } from "@/app/actions/admin"
 
@@ -197,20 +195,6 @@ export default function AdminDashboard() {
       await Promise.all([fetchPending(), fetchData()])
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to reject project")
-    } finally {
-      setPendingActionId(undefined)
-    }
-  }
-
-  const handleToggleFeatured = async (id: string, value: boolean) => {
-    setPendingActionId(`feature-${id}`)
-    try {
-      const res = await toggleFeatured(id, value)
-      if (!res.success) throw new Error(res.error)
-      toast.success(value ? "Project featured" : "Project unfeatured")
-      await fetchPending()
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update featured flag")
     } finally {
       setPendingActionId(undefined)
     }
@@ -447,18 +431,6 @@ export default function AdminDashboard() {
                     >
                       <Check className="h-3.5 w-3.5" />
                       Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 gap-1.5"
-                      onClick={() => handleToggleFeatured(p.id, !p.featuredOnHomepage)}
-                      disabled={pendingActionId === `feature-${p.id}`}
-                    >
-                      <Star
-                        className={`h-3.5 w-3.5 ${p.featuredOnHomepage ? "fill-current" : ""}`}
-                      />
-                      {p.featuredOnHomepage ? "Unfeature" : "Feature"}
                     </Button>
                     <Button
                       size="sm"

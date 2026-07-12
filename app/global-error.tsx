@@ -3,7 +3,6 @@
 // Backstop for errors thrown in the root layout itself. It replaces the layout,
 // so it must render its own <html>/<body> and avoid app-level dependencies.
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string }

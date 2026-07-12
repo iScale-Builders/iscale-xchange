@@ -22,8 +22,6 @@ export interface SearchResult {
 // Fonction de recherche avec mise en cache
 const getSearchResults = unstable_cache(
   async (query: string, limit: number = 10): Promise<SearchResult[]> => {
-    console.log(`[Search API] Searching for: "${query}"`)
-
     // Vérifier si la requête est valide
     if (!query || query.length < 2) {
       return []
@@ -86,7 +84,6 @@ const getSearchResults = unstable_cache(
       // Combiner et limiter les résultats
       const combinedResults = [...formattedProjects, ...formattedCategories].slice(0, limit)
 
-      console.log(`[Search API] Found ${combinedResults.length} results`)
       return combinedResults
     } catch (error) {
       console.error("[Search API] Error searching:", error)

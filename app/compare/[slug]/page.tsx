@@ -32,7 +32,11 @@ function canonicalSlug(a: string, b: string): string {
 async function loadPair(slug: string): Promise<{ a: Tool; b: Tool } | null> {
   const parsed = parsePair(slug)
   if (!parsed) return null
-  const [a, b] = await Promise.all([getProjectBySlug(parsed[0]), getProjectBySlug(parsed[1])])
+  // Force the anonymous view on this shared ISR page (never cache hidden/pending).
+  const [a, b] = await Promise.all([
+    getProjectBySlug(parsed[0], null),
+    getProjectBySlug(parsed[1], null),
+  ])
   if (!a || !b) return null
   return { a, b }
 }
@@ -157,7 +161,7 @@ export default async function ComparePage({ params }: { params: Promise<{ slug: 
 
         <header className="mb-8 flex flex-col gap-3">
           <p className="foundry-kicker">Head to head</p>
-          <h1 className="font-heading text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+          <h1 className="font-heading text-foreground text-4xl font-black tracking-tight sm:text-5xl">
             {a.name} vs {b.name} ({YEAR})
           </h1>
           <p className="text-muted-foreground max-w-2xl text-base sm:text-lg">
@@ -213,7 +217,7 @@ export default async function ComparePage({ params }: { params: Promise<{ slug: 
         </div>
 
         <section className="mb-12 max-w-3xl">
-          <h2 className="font-heading mb-5 text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="font-heading text-foreground mb-5 text-2xl font-bold sm:text-3xl">
             {a.name} vs {b.name} — frequently asked questions
           </h2>
           <div className="space-y-5">

@@ -12,8 +12,8 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Textarea } from "@/components/ui/textarea"
-import { getAllCategories } from "@/app/actions/projects"
 import { submitProblem } from "@/app/actions/problems"
+import { getAllCategories } from "@/app/actions/projects"
 
 import { ImageUploadInput } from "./image-upload-input"
 
@@ -107,7 +107,7 @@ export function SubmitProblemForm() {
           Describe it <span className="text-red-500">*</span>
         </Label>
         <p className="text-muted-foreground mt-1 mb-1.5 text-xs">
-          What's happening, why it's hard, and what a good solution would look like.
+          What&apos;s happening, why it&apos;s hard, and what a good solution would look like.
         </p>
         <RichTextEditor
           content={description}

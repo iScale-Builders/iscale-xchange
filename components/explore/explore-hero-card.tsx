@@ -23,6 +23,7 @@ interface ExploreHeroCardProps {
   description: string
   images: string[]
   launchStatus: string
+  availability?: string | null
   websiteUrl?: string | null
   category?: string
   creatorName?: string | null
@@ -41,6 +42,7 @@ export function ExploreHeroCard({
   description,
   images,
   launchStatus,
+  availability,
   websiteUrl,
   category,
   creatorName,
@@ -127,7 +129,7 @@ export function ExploreHeroCard({
             Top tool
           </span>
           <span className="border-border/60 bg-foreground/[0.03] rounded-full border px-2.5 py-0.5 text-[11px] font-semibold">
-            {toolStatusLabel(launchStatus, websiteUrl)}
+            {toolStatusLabel(launchStatus, websiteUrl, availability)}
           </span>
           {category && (
             <span className="border-border/60 bg-foreground/[0.03] rounded-full border px-2.5 py-0.5 text-[11px] font-medium">

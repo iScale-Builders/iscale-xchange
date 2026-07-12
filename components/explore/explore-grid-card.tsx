@@ -22,6 +22,7 @@ interface ExploreGridCardProps {
   description: string
   images: string[]
   launchStatus: string
+  availability?: string | null
   websiteUrl?: string | null
   upvoteCount: number
   commentCount: number
@@ -44,6 +45,7 @@ export function ExploreGridCard({
   description,
   images,
   launchStatus,
+  availability,
   websiteUrl,
   upvoteCount,
   commentCount,
@@ -85,7 +87,7 @@ export function ExploreGridCard({
           className="bg-background/85 border-border absolute top-2 right-2 backdrop-blur"
         />
         <div className="border-border bg-muted text-foreground absolute top-2 left-2 rounded-full border px-2 py-1 text-xs font-black backdrop-blur-xl">
-          {toolStatusLabel(launchStatus, websiteUrl)}
+          {toolStatusLabel(launchStatus, websiteUrl, availability)}
         </div>
       </div>
 

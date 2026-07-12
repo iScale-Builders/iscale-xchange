@@ -38,6 +38,7 @@ export default async function Home() {
     description: p.description,
     images: galleryFor(p),
     launchStatus: p.launchStatus,
+    availability: p.availability,
     websiteUrl: p.websiteUrl,
     submissionType: p.submissionType,
     category: p.categories[0]?.name,

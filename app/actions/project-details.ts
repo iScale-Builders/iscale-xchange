@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 import { db } from "@/drizzle/db"
 import {
+  approvalStatus,
   category,
   launchStatus,
   project,
@@ -15,6 +16,8 @@ import {
 import { and, eq, ne, sql } from "drizzle-orm"
 
 import { getLocalUser, getSyncedCurrentUserId } from "@/lib/ensure-user"
+import { sanitizeRichText } from "@/lib/sanitize-html"
+import { isHttpUrl } from "@/lib/validate-url"
 
 const getProjectBySlugForViewer = cache(async (slug: string, viewerId: string | null) => {
   // Get project details - Exclure les projets avec le statut payment_pending
@@ -40,7 +43,11 @@ const getProjectBySlugForViewer = cache(async (slug: string, viewerId: string | 
 
   const [creatorRows, categories, upvoteRows, viewerUpvoteRows] = await Promise.all([
     projectData.createdBy
-      ? db.select().from(user).where(eq(user.id, projectData.createdBy)).limit(1)
+      ? db
+          .select({ id: user.id, name: user.name, image: user.image })
+          .from(user)
+          .where(eq(user.id, projectData.createdBy))
+          .limit(1)
       : Promise.resolve([]),
     db
       .select({
@@ -127,12 +134,8 @@ export async function updateProject(
     }
 
     const normalizedWebsiteUrl = data.websiteUrl.trim()
-    if (normalizedWebsiteUrl) {
-      try {
-        new URL(normalizedWebsiteUrl)
-      } catch {
-        return { success: false, error: "Please enter a valid website URL" }
-      }
+    if (normalizedWebsiteUrl && !isHttpUrl(normalizedWebsiteUrl)) {
+      return { success: false, error: "Please enter a valid http(s) website URL" }
     }
     // Images may be absolute URLs, uploaded data: URLs, or in-app relative paths
     // (e.g. "/images/apps/foo.png"). Only reject clearly malformed values.
@@ -165,13 +168,18 @@ export async function updateProject(
       return { success: false, error: "Please enter valid listing image URLs or paths" }
     }
 
-    if (data.categories.length === 0 || data.categories.length > 3) {
-      return { success: false, error: "Please select between 1 and 3 categories" }
+    if (data.categories.length === 0 || data.categories.length > 5) {
+      return { success: false, error: "Please select between 1 and 5 categories" }
     }
 
     const fallbackLogoUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(data.name)}`
     const primaryImage = galleryImages[0] ?? data.productImage?.trim() ?? null
     const coverImage = galleryImages[1] ?? data.coverImage?.trim() ?? primaryImage
+
+    // A non-admin edit re-enters the approval queue, so an already-approved post
+    // can't be bait-and-switched to unreviewed content. Admin edits stay live.
+    const editor = await getLocalUser(userId)
+    const requeueForApproval = editor?.role !== "admin"
 
     // Update project details
     await db
@@ -183,9 +191,10 @@ export async function updateProject(
         productImage: primaryImage,
         coverImageUrl: coverImage,
         galleryImages: galleryImages.length > 0 ? galleryImages : null,
-        description: data.description,
+        description: sanitizeRichText(data.description),
         ...(data.availability ? { availability: data.availability } : {}),
         ...(data.hidden !== undefined ? { hidden: data.hidden } : {}),
+        ...(requeueForApproval ? { approvalStatus: approvalStatus.PENDING } : {}),
         updatedAt: new Date(),
       })
       .where(eq(project.id, projectId))
@@ -204,8 +213,13 @@ export async function updateProject(
       )
     }
 
-    // Revalidate the project page
+    // Revalidate the project page and every public list the edit can affect —
+    // hiding or re-queuing must drop the card from cached list pages at once.
     revalidatePath(`/projects/${projectData.slug}`)
+    revalidatePath("/")
+    revalidatePath("/explore")
+    revalidatePath("/solutions")
+    revalidatePath("/problems")
 
     return {
       success: true,

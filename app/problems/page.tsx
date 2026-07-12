@@ -6,6 +6,10 @@ import { RiArrowRightLine, RiArrowUpLine, RiChat3Line } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import { getProblems } from "@/app/actions/problems"
 
+// Public list must always reflect current moderation state (hidden/approval),
+// so render dynamically instead of serving a stale static cache.
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Problems",
   description:
@@ -58,7 +62,7 @@ export default async function ProblemsPage() {
           <div className="foundry-panel rounded-2xl p-8 text-center">
             <h2 className="text-foreground text-lg font-black">No problems posted yet</h2>
             <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm leading-6">
-              Be the first to post what you're stuck on. The clearest, most-voted problems get
+              Be the first to post what you&apos;re stuck on. The clearest, most-voted problems get
               solved first.
             </p>
             <Button asChild className="mt-5 rounded-full">
@@ -94,7 +98,7 @@ export default async function ProblemsPage() {
                     </span>
                   ))}
                 </div>
-                <h2 className="text-foreground mt-3 text-lg font-black leading-snug group-hover:underline">
+                <h2 className="text-foreground mt-3 text-lg leading-snug font-black group-hover:underline">
                   {p.name}
                 </h2>
                 <p className="text-muted-foreground mt-2 line-clamp-3 text-sm leading-6">
