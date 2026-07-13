@@ -13,6 +13,7 @@ import {
   SOCIAL_PROFILES,
   TITLE_TEMPLATE,
 } from "@/lib/seo/site"
+import { PageTracker } from "@/components/analytics/page-tracker"
 import Footer from "@/components/layout/footer"
 import Nav from "@/components/layout/nav"
 import { ScrollReveal } from "@/components/motion/scroll-reveal"
@@ -85,6 +86,7 @@ export default function RootLayout({
           </ThemeProvider>
           <Toaster />
           <Analytics />
+          <PageTracker />
         </body>
       </html>
     </ClerkProvider>

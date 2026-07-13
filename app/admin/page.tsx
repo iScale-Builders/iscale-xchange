@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { format, parseISO } from "date-fns"
 import {
   Ban,
+  BarChart3,
   Calendar,
   Check,
   Filter,
@@ -44,9 +45,12 @@ import {
   getCategories,
   getFreeLaunchAvailability,
   getPendingProjects,
+  getSiteAnalytics,
   rejectProject,
   unbanUserAction,
 } from "@/app/actions/admin"
+
+type SiteAnalytics = Awaited<ReturnType<typeof getSiteAnalytics>>
 
 type PendingProject = {
   id: string
@@ -115,6 +119,8 @@ export default function AdminDashboard() {
   const [newCategory, setNewCategory] = useState("")
   const [isAddingCategory, setIsAddingCategory] = useState(false)
   const [categoryError, setCategoryError] = useState<string | null>(null)
+  const [analytics, setAnalytics] = useState<SiteAnalytics | null>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
   useIsMobile()
 
   // Fetch users, stats and free launch availability
@@ -150,6 +156,18 @@ export default function AdminDashboard() {
       setFreeLaunchAvailability(null)
     }
     setLoading(false)
+  }
+
+  // Fetch live site analytics (first-party page_view data)
+  const fetchAnalytics = async () => {
+    setAnalyticsLoading(true)
+    try {
+      setAnalytics(await getSiteAnalytics())
+    } catch (error) {
+      console.error("Failed to fetch site analytics:", error)
+      setAnalytics(null)
+    }
+    setAnalyticsLoading(false)
   }
 
   // Fetch pending submissions
@@ -234,6 +252,7 @@ export default function AdminDashboard() {
     fetchData()
     fetchCategories()
     fetchPending()
+    fetchAnalytics()
   }, [])
 
   // Filtres
@@ -328,6 +347,137 @@ export default function AdminDashboard() {
               </span>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Site Analytics — first-party page_view data, queried live */}
+      <div className="bg-card overflow-hidden rounded-lg border">
+        <div className="flex items-center justify-between border-b p-3">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="text-muted-foreground h-4 w-4" />
+            <h2 className="text-sm font-medium">Site Analytics</h2>
+            <span className="text-muted-foreground text-xs">(live · last 30 days · UTC)</span>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={fetchAnalytics}
+            className="h-8 gap-2"
+            type="button"
+          >
+            <RefreshCw className={`h-4 w-4 ${analyticsLoading ? "animate-spin" : ""}`} />
+            <span className="hidden sm:inline">Refresh</span>
+          </Button>
+        </div>
+        <div className="space-y-4 p-3">
+          {analyticsLoading && !analytics ? (
+            <div className="text-muted-foreground py-4 text-center text-sm">Loading…</div>
+          ) : !analytics ? (
+            <div className="text-muted-foreground py-4 text-center text-sm">
+              Couldn&apos;t load analytics. Hit Refresh to retry.
+            </div>
+          ) : (
+            <>
+              {/* Totals */}
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+                <div className="bg-muted/40 rounded-md p-2.5">
+                  <div className="text-muted-foreground text-xs">Visitors today</div>
+                  <div className="text-lg font-semibold">{analytics.today.visitors}</div>
+                  <div className="text-muted-foreground text-xs">{analytics.today.views} views</div>
+                </div>
+                <div className="bg-muted/40 rounded-md p-2.5">
+                  <div className="text-muted-foreground text-xs">Visitors · 7 days</div>
+                  <div className="text-lg font-semibold">{analytics.last7.visitors}</div>
+                  <div className="text-muted-foreground text-xs">{analytics.last7.views} views</div>
+                </div>
+                <div className="bg-muted/40 rounded-md p-2.5">
+                  <div className="text-muted-foreground text-xs">Visitors · 30 days</div>
+                  <div className="text-lg font-semibold">{analytics.last30.visitors}</div>
+                  <div className="text-muted-foreground text-xs">
+                    {analytics.last30.views} views
+                  </div>
+                </div>
+                <div className="bg-muted/40 rounded-md p-2.5">
+                  <div className="text-muted-foreground text-xs">Devices · 30 days</div>
+                  <div className="pt-1 text-xs leading-5">
+                    {analytics.devices.length === 0 ? (
+                      <span className="text-muted-foreground">No data yet</span>
+                    ) : (
+                      analytics.devices.map((entry) => (
+                        <div key={entry.device ?? "unknown"} className="flex justify-between">
+                          <span className="capitalize">{entry.device ?? "unknown"}</span>
+                          <span className="text-muted-foreground">{entry.views}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 30-day views sparkline */}
+              {analytics.daily.length > 0 && (
+                <div>
+                  <div className="text-muted-foreground mb-1 text-xs">Daily views</div>
+                  <div className="flex h-16 items-end gap-[2px]">
+                    {analytics.daily.map((day) => {
+                      const max = Math.max(...analytics.daily.map((item) => item.views), 1)
+                      return (
+                        <div
+                          key={day.day}
+                          title={`${day.day}: ${day.visitors} visitors · ${day.views} views`}
+                          className="bg-primary/70 hover:bg-primary min-w-[3px] flex-1 rounded-sm"
+                          style={{ height: `${Math.max((day.views / max) * 100, 4)}%` }}
+                        />
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Top pages + referrers */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <div className="text-muted-foreground mb-1 text-xs">Top pages</div>
+                  {analytics.topPages.length === 0 ? (
+                    <div className="text-muted-foreground text-sm">
+                      No views recorded yet — data starts collecting from the first visit.
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      {analytics.topPages.map((page) => (
+                        <div key={page.path} className="flex items-center justify-between text-sm">
+                          <span className="truncate pr-2 font-mono text-xs">{page.path}</span>
+                          <span className="text-muted-foreground shrink-0 text-xs">
+                            {page.visitors} · {page.views} views
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <div className="text-muted-foreground mb-1 text-xs">Top referrers</div>
+                  {analytics.topReferrers.length === 0 ? (
+                    <div className="text-muted-foreground text-sm">No external referrers yet.</div>
+                  ) : (
+                    <div className="space-y-1">
+                      {analytics.topReferrers.map((ref) => (
+                        <div
+                          key={ref.referrer ?? "direct"}
+                          className="flex items-center justify-between text-sm"
+                        >
+                          <span className="truncate pr-2 text-xs">{ref.referrer}</span>
+                          <span className="text-muted-foreground shrink-0 text-xs">
+                            {ref.views} views
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
