@@ -7,6 +7,7 @@ import {
   approvalStatus as approvalStatusEnum,
   category,
   launchStatus as launchStatusEnum,
+  pageView,
   project,
   projectToCategory,
   user,
@@ -356,5 +357,85 @@ export async function setLaunchStatus(projectId: string, status: LaunchStatus) {
   } catch (error) {
     console.error("Error setting launch status:", error)
     return { success: false, error: "Failed to set launch status" }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Site analytics (first-party, fed by /api/pulse into page_view).
+// Queried live on every call, so the admin panel is always current.
+// ---------------------------------------------------------------------------
+
+export async function getSiteAnalytics() {
+  await checkAdminAccess()
+
+  const now = Date.now()
+  const dayMs = 24 * 60 * 60 * 1000
+  const startOfTodayUtc = new Date(new Date().toISOString().slice(0, 10))
+  const since7d = new Date(now - 7 * dayMs)
+  const since30d = new Date(now - 30 * dayMs)
+
+  const totalsSince = (since: Date) =>
+    db
+      .select({
+        views: sql<number>`count(*)::int`,
+        visitors: sql<number>`count(distinct ${pageView.visitor})::int`,
+      })
+      .from(pageView)
+      .where(gte(pageView.createdAt, since))
+
+  const [[today], [last7], [last30], daily, topPages, topReferrers, devices] = await Promise.all([
+    totalsSince(startOfTodayUtc),
+    totalsSince(since7d),
+    totalsSince(since30d),
+    db
+      .select({
+        day: sql<string>`to_char(${pageView.createdAt} at time zone 'utc', 'YYYY-MM-DD')`,
+        views: sql<number>`count(*)::int`,
+        visitors: sql<number>`count(distinct ${pageView.visitor})::int`,
+      })
+      .from(pageView)
+      .where(gte(pageView.createdAt, since30d))
+      .groupBy(sql`1`)
+      .orderBy(sql`1`),
+    db
+      .select({
+        path: pageView.path,
+        views: sql<number>`count(*)::int`,
+        visitors: sql<number>`count(distinct ${pageView.visitor})::int`,
+      })
+      .from(pageView)
+      .where(gte(pageView.createdAt, since30d))
+      .groupBy(pageView.path)
+      .orderBy(desc(sql`count(*)`))
+      .limit(10),
+    db
+      .select({
+        referrer: pageView.referrer,
+        views: sql<number>`count(*)::int`,
+      })
+      .from(pageView)
+      .where(and(gte(pageView.createdAt, since30d), sql`${pageView.referrer} is not null`))
+      .groupBy(pageView.referrer)
+      .orderBy(desc(sql`count(*)`))
+      .limit(10),
+    db
+      .select({
+        device: pageView.device,
+        views: sql<number>`count(*)::int`,
+      })
+      .from(pageView)
+      .where(gte(pageView.createdAt, since30d))
+      .groupBy(pageView.device)
+      .orderBy(desc(sql`count(*)`)),
+  ])
+
+  return {
+    today: today ?? { views: 0, visitors: 0 },
+    last7: last7 ?? { views: 0, visitors: 0 },
+    last30: last30 ?? { views: 0, visitors: 0 },
+    daily,
+    topPages,
+    topReferrers,
+    devices,
   }
 }

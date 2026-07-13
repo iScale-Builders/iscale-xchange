@@ -1,4 +1,5 @@
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -128,6 +129,28 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at"),
 })
+
+// First-party page-view beacon (one row per tracked view), written by
+// /api/pulse and read by the admin Site Analytics panel. `visitor` is a
+// one-way hash that rotates daily — no IP or user agent is ever stored.
+export const pageView = pgTable(
+  "page_view",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+    path: text("path").notNull(),
+    referrer: text("referrer"),
+    visitor: text("visitor").notNull(),
+    country: text("country"),
+    device: text("device"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => {
+    return {
+      createdAtIdx: index("page_view_created_at_idx").on(table.createdAt),
+      pathIdx: index("page_view_path_idx").on(table.path, table.createdAt),
+    }
+  },
+)
 
 export const project = pgTable(
   "project",
