@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Space_Grotesk as FontHeading, Inter as FontSans } from "next/font/google"
 
 import { ClerkProvider } from "@clerk/nextjs"
+import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 
 import { organizationSchema, websiteSchema } from "@/lib/seo/schema"
@@ -83,6 +84,7 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
           <Toaster />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
