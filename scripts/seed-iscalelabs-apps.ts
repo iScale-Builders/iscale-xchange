@@ -166,6 +166,8 @@ async function seed() {
     pricing: app.pricing,
     platforms: app.platforms,
     launchStatus: app.launchStatus ?? launchStatus.SCHEDULED,
+    availability: app.availability ?? "coming_soon",
+    approvalStatus: "approved" as const,
     scheduledLaunchDate:
       app.launchStatus === launchStatus.LAUNCHED
         ? null
