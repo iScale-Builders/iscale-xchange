@@ -1,6 +1,71 @@
 import { db } from "@/drizzle/db"
 import { blogArticle } from "@/drizzle/db/schema"
 
+import { CHROME_WEB_STORE } from "@/lib/chrome-store"
+
+const CHROME_STORE = CHROME_WEB_STORE
+const READYPIXL_URL = "https://readypixl.com"
+
+type ToolKey =
+  | "pintwist"
+  | "iscale-etsy"
+  | "iscale-merch"
+  | "readypixl"
+  | "promoteflow"
+  | "iscale-images"
+  | "pixel-mock"
+  | "iscalexchange"
+
+const TOOLS: Record<
+  ToolKey,
+  { name: string; href: string; chrome?: string; external?: string; note?: string }
+> = {
+  pintwist: {
+    name: "PinTwist",
+    href: "/projects/pintwist",
+    chrome: CHROME_STORE.pintwist,
+    note: "open-source Pinterest research extension",
+  },
+  "iscale-etsy": {
+    name: "iScale Etsy",
+    href: "/projects/iscale-etsy",
+    chrome: CHROME_STORE.iscaleEtsy,
+    note: "local-first Etsy research extension",
+  },
+  "iscale-merch": {
+    name: "iScale Merch",
+    href: "/projects/iscale-merch",
+    chrome: CHROME_STORE.iscaleMerch,
+    note: "Amazon Merch niche research extension",
+  },
+  readypixl: {
+    name: "ReadyPixl",
+    href: READYPIXL_URL,
+    external: READYPIXL_URL,
+    note: "bulk image engine — upscale, background removal, POD presets",
+  },
+  promoteflow: {
+    name: "PromoteFlow",
+    href: "/projects/promoteflow",
+    note: "Amazon product page → reviewed Pinterest pin drafts",
+  },
+  "iscale-images": {
+    name: "iScale Images",
+    href: "/projects/iscale-images",
+    note: "free POD image library with full usage rights",
+  },
+  "pixel-mock": {
+    name: "Pixel Mock",
+    href: "/projects/pixel-mock-bulk-product-mockups",
+    note: "bulk product mockups for clothing and POD",
+  },
+  iscalexchange: {
+    name: "iScaleXchange",
+    href: "/explore",
+    note: "builder and seller tool directory",
+  },
+}
+
 interface SeoBlogPlan {
   slug: string
   title: string
@@ -16,7 +81,8 @@ interface SeoBlogPlan {
     body: string[]
   }[]
   checklist: string[]
-  relatedTools: string[]
+  relatedTools: ToolKey[]
+  fitsNote: string
 }
 
 const publishedDates: Record<string, string> = {
@@ -35,12 +101,32 @@ const publishedDates: Record<string, string> = {
   "how-to-promote-a-new-ai-tool": "2026-06-21T14:10:00.000Z",
 }
 
+const LAST_REVIEWED = "August 4, 2026"
+
 function publishedAtFor(slug: string) {
   return new Date(publishedDates[slug] ?? "2026-06-22T12:00:00.000Z")
 }
 
 function imageFor(slug: string) {
   return `/blog-thumbnails/${slug}.png`
+}
+
+function formatRelatedTools(keys: ToolKey[]): string {
+  return keys
+    .map((key) => {
+      const tool = TOOLS[key]
+      const nameLink = `[${tool.name}](${tool.href})`
+      const bits = [nameLink]
+      if (tool.note) bits.push(`— ${tool.note}`)
+      if (tool.chrome) {
+        bits.push(`· free on the [Chrome Web Store](${tool.chrome})`)
+      }
+      if (tool.external && key === "readypixl") {
+        bits.push(`· live at [readypixl.com](${READYPIXL_URL})`)
+      }
+      return `- ${bits.join(" ")}`
+    })
+    .join("\n")
 }
 
 const articles: SeoBlogPlan[] = [
@@ -67,15 +153,15 @@ const articles: SeoBlogPlan[] = [
         heading: "What AI should actually do for an Etsy seller",
         body: [
           "The best AI setup is not a magic button that creates a full shop. It is a workflow assistant. Use it to summarize product context, turn real details into listing drafts, create alternate title angles, prepare image captions, and organize repeatable tasks.",
-          "For print-on-demand sellers, the highest leverage is removing repeat work. If every design needs a title, 13 tags, a description, mockup notes, Pinterest copy, and a launch checklist, AI can turn one product brief into a complete working draft.",
+          "For print-on-demand sellers, the highest leverage is removing repeat work. If every design needs a title, tags, a description, mockup notes, Pinterest copy, and a launch checklist, AI can turn one product brief into a complete working draft.",
         ],
       },
       {
         heading: "The core categories to compare",
         body: [
-          "Start with keyword research, because bad inputs create weak listings. Tools in this lane help sellers find phrases buyers already use, spot seasonal language, and avoid titles that sound clever but do not match search intent.",
+          "Start with keyword research, because bad inputs create weak listings. Tools in this lane help sellers find phrases buyers already use, spot seasonal language, and avoid titles that sound clever but do not match search intent. A local research extension such as [iScale Etsy](/projects/iscale-etsy) (also on the [Chrome Web Store](https://chromewebstore.google.com/detail/fmeiigklgemlfcnpbdjeipdkogieidkm)) helps capture real listing signals while you browse.",
           "Next comes listing generation. A useful AI listing tool should ask for the product, buyer, occasion, material, style, and use case. If it only asks for a generic prompt, it will usually create generic copy.",
-          "Mockup and image tools matter because Etsy search is not just text. Click-through rate and buyer confidence depend on the first image, the crop, and whether the product is obvious at a glance.",
+          "Mockup and image tools matter because Etsy search is not just text. Click-through rate and buyer confidence depend on the first image, the crop, and whether the product is obvious at a glance. For bulk cleanup and print-ready prep, [ReadyPixl](https://readypixl.com) is live for upscale, background removal, and seller-oriented presets.",
           "Bulk editing and scheduling tools matter once a shop has volume. At that point, the problem changes from creating one listing to keeping hundreds of listings consistent, searchable, and current.",
         ],
       },
@@ -84,6 +170,7 @@ const articles: SeoBlogPlan[] = [
         body: [
           "Create a product brief first: niche, product type, design concept, buyer, occasion, colors, personalization options, and any compliance notes. Then ask AI for title angles, tag clusters, description sections, and image alt text.",
           "Do not publish the first draft. Edit the title so the front of the title is readable and specific. Remove repeated keywords. Add real product details that only you know. This is where a human shop owner beats a generic AI seller.",
+          "When you are ready for external traffic, research pin angles with [PinTwist](/projects/pintwist) on the [Chrome Web Store](https://chromewebstore.google.com/detail/jpafibmmnckjkpanchflenfbmggldmkk) instead of guessing which boards or saves matter.",
         ],
       },
     ],
@@ -94,7 +181,9 @@ const articles: SeoBlogPlan[] = [
       "Add real product details, not vague lifestyle filler.",
       "Review AI output for policy, trademark, and originality risk.",
     ],
-    relatedTools: ["iScale Etsy", "Pin Twist", "AutoMerch"],
+    relatedTools: ["iscale-etsy", "pintwist", "readypixl"],
+    fitsNote:
+      "Browse live Etsy, Pinterest, and image tools on the exchange, then install the Chrome extensions that match the step you are stuck on.",
   },
   {
     slug: "etsy-seo-tools-for-print-on-demand",
@@ -123,9 +212,9 @@ const articles: SeoBlogPlan[] = [
       {
         heading: "Tool categories that matter",
         body: [
-          "Keyword tools help you discover buyer phrases. They are useful when they surface long-tail terms, seasonality, and phrases you would not have guessed.",
+          "Keyword tools help you discover buyer phrases. They are useful when they surface long-tail terms, seasonality, and phrases you would not have guessed. Capture real marketplace language with [iScale Etsy](/projects/iscale-etsy) from the [Chrome Web Store](https://chromewebstore.google.com/detail/fmeiigklgemlfcnpbdjeipdkogieidkm) while you browse search results.",
           "Listing audit tools help catch missing tags, weak descriptions, thin titles, and incomplete attributes. They do not replace judgment, but they are useful guardrails.",
-          "Mockup tools affect SEO indirectly by improving click-through and conversion. A listing with a clear first image usually has a better chance than a listing with a confusing thumbnail.",
+          "Mockup tools affect SEO indirectly by improving click-through and conversion. A listing with a clear first image usually has a better chance than a listing with a confusing thumbnail. Clean, print-ready art with [ReadyPixl](https://readypixl.com) before you mock up reduces soft, low-contrast first images.",
           "Bulk tools matter when you have many similar products. They help update tags, descriptions, prices, and titles without turning every change into a full afternoon.",
         ],
       },
@@ -144,7 +233,9 @@ const articles: SeoBlogPlan[] = [
       "Refresh weak listings in batches.",
       "Track what changed so you know what actually worked.",
     ],
-    relatedTools: ["iScale Etsy", "Pin Twist"],
+    relatedTools: ["iscale-etsy", "pintwist", "readypixl"],
+    fitsNote:
+      "Pair Etsy research with Pinterest signal research so SEO and external traffic reinforce the same buyer language.",
   },
   {
     slug: "print-on-demand-automation-tools",
@@ -167,7 +258,7 @@ const articles: SeoBlogPlan[] = [
       {
         heading: "Where automation helps first",
         body: [
-          "Start with the repeatable handoffs. Design files need consistent names, transparent backgrounds, correct dimensions, and export settings. If those pieces are messy, every later step gets slower.",
+          "Start with the repeatable handoffs. Design files need consistent names, transparent backgrounds, correct dimensions, and export settings. If those pieces are messy, every later step gets slower. [ReadyPixl](https://readypixl.com) is live for the image-prep lane: upscale, background removal, and preset workflows built for sellers.",
           "Next automate listing drafts. A good product brief should become a title draft, tags, a description, Pinterest text, and a launch note. The seller should review and approve, not write from zero every time.",
         ],
       },
@@ -175,9 +266,9 @@ const articles: SeoBlogPlan[] = [
         heading: "The POD automation stack",
         body: [
           "Design prep tools handle image cleanup, upscaling, background removal, and print-file checks. These save time because every bad file can create a refund or rework request later.",
-          "Mockup tools turn the design into buyer-facing images. The goal is not just pretty images; the goal is a clear first image and enough angles to answer buyer doubts.",
-          "Bulk upload tools help with Amazon Merch, Etsy, Redbubble, TeePublic, and similar channels. The key feature is not just speed. It is validation, trademark checking, and consistent metadata.",
-          "Promotion tools help create Pinterest pins, social posts, and launch updates from the same source data so the product does not die after upload.",
+          "Mockup tools turn the design into buyer-facing images. The goal is not just pretty images; the goal is a clear first image and enough angles to answer buyer doubts. [Pixel Mock](/projects/pixel-mock-bulk-product-mockups) is one option when you need bulk mockups in a single session.",
+          "Research tools decide what is worth uploading. [iScale Merch](/projects/iscale-merch) and [iScale Etsy](/projects/iscale-etsy) are both on the Chrome Web Store for marketplace research without sending your scans to a hosted backend.",
+          "Promotion tools help create Pinterest pins, social posts, and launch updates from the same source data so the product does not die after upload. [PinTwist](/projects/pintwist) helps research which pin angles already earn saves before you automate volume.",
         ],
       },
       {
@@ -195,7 +286,9 @@ const articles: SeoBlogPlan[] = [
       "Create promo assets at the same time as listings.",
       "Track which automation step saves time or increases quality.",
     ],
-    relatedTools: ["AutoMerch", "iScale Listings", "PromoteFlow"],
+    relatedTools: ["readypixl", "iscale-merch", "iscale-etsy", "pintwist", "pixel-mock"],
+    fitsNote:
+      "Use the exchange to map each POD handoff to a live tool — research, image prep, mockups, and promotion — instead of buying five subscriptions at once.",
   },
   {
     slug: "amazon-merch-on-demand-tools",
@@ -217,7 +310,7 @@ const articles: SeoBlogPlan[] = [
       {
         heading: "The Amazon Merch tool categories",
         body: [
-          "Research tools help sellers decide what to create. They look at keywords, niches, competition, and trend movement so a seller is not relying only on guesses.",
+          "Research tools help sellers decide what to create. They look at keywords, niches, competition, and trend movement so a seller is not relying only on guesses. [iScale Merch](/projects/iscale-merch) is free on the [Chrome Web Store](https://chromewebstore.google.com/detail/cdahaaaepjicdklfgohgfkmocnicjffg) and overlays BSR, dates, and competition signals on Amazon pages while keeping research local.",
           "Trademark tools are essential because a phrase can look harmless and still create upload risk. A good workflow checks titles, bullets, brand fields, and design text before publishing.",
           "Bulk upload tools save time when the seller already has a vetted design set. The safest bulk workflow includes validation before submission, not just faster clicking.",
         ],
@@ -226,14 +319,14 @@ const articles: SeoBlogPlan[] = [
         heading: "What a good listing workflow looks like",
         body: [
           "Start with a niche and buyer. Generate a list of phrase angles, then check them for trademarks and marketplace fit. Create the design only after the phrase and concept pass the first risk check.",
-          "After the design is ready, write title and bullet drafts that describe the product clearly without making unsupported claims or using protected names.",
+          "After the design is ready, write title and bullet drafts that describe the product clearly without making unsupported claims or using protected names. Clean transparent exports with [ReadyPixl](https://readypixl.com) before you lock mockups and upload files.",
         ],
       },
       {
         heading: "Speed is not the whole goal",
         body: [
           "A tool that uploads 100 designs quickly is only useful if the inputs are safe and organized. The real win is a pipeline where each design has research notes, export files, listing copy, and status.",
-          "That is why Amazon Merch workflows need a dashboard mindset: what is researched, what is ready, what was rejected, what needs edits, and what should be promoted next.",
+          "That is why Amazon Merch workflows need a dashboard mindset: what is researched, what is ready, what was rejected, what needs edits, and what should be promoted next. For Amazon → Pinterest promotion after a design is live, [PromoteFlow](/projects/promoteflow) turns a product link into a pin draft you still approve before publish.",
         ],
       },
     ],
@@ -244,7 +337,9 @@ const articles: SeoBlogPlan[] = [
       "Use bulk upload only after review.",
       "Record rejection reasons so the workflow improves.",
     ],
-    relatedTools: ["AutoMerch", "iScale Merch"],
+    relatedTools: ["iscale-merch", "readypixl", "promoteflow"],
+    fitsNote:
+      "Start with Merch research in Chrome, prep files in ReadyPixl, then promote winning ASINs without rebuilding pins from scratch.",
   },
   {
     slug: "product-hunt-alternatives-for-ai-tools",
@@ -273,7 +368,7 @@ const articles: SeoBlogPlan[] = [
       {
         heading: "Useful alternative channels",
         body: [
-          "Tool directories can create long-term discovery when they have crawlable pages, clear categories, and direct links.",
+          "Tool directories can create long-term discovery when they have crawlable pages, clear categories, and direct links. [iScaleXchange](/explore) is built for builder and seller tools, including Chrome extensions already live on the store.",
           "Founder communities are useful for feedback and early users, especially when the post explains the problem solved instead of just dropping a link.",
           "Niche blogs and reviews work well when the product has a clear use case. A review page can rank for product-name searches and comparison terms.",
           "Owned content matters because it compounds. A launch article, comparison page, tutorial, and changelog can keep bringing people after launch day ends.",
@@ -294,7 +389,9 @@ const articles: SeoBlogPlan[] = [
       "Publish an owned launch article.",
       "Track backlinks and referral traffic.",
     ],
-    relatedTools: ["PromoteFlow", "iScaleXchange"],
+    relatedTools: ["iscalexchange", "promoteflow"],
+    fitsNote:
+      "List the product on the exchange for durable discovery, then use owned content and niche communities after the first launch spike fades.",
   },
   {
     slug: "ai-listing-generator-for-etsy",
@@ -318,7 +415,7 @@ const articles: SeoBlogPlan[] = [
         heading: "Start with the product brief",
         body: [
           "An AI listing generator is only as good as the details you give it. Start with the product type, design style, buyer, occasion, materials, color options, sizing, personalization, and shipping notes.",
-          "For print-on-demand, include the blank type and the use case. A shirt for a family reunion needs different language than a minimalist office poster or a personalized pet mug.",
+          "For print-on-demand, include the blank type and the use case. A shirt for a family reunion needs different language than a minimalist office poster or a personalized pet mug. Pull real competitor language first with [iScale Etsy](/projects/iscale-etsy) on the [Chrome Web Store](https://chromewebstore.google.com/detail/fmeiigklgemlfcnpbdjeipdkogieidkm) so your brief is grounded in search intent.",
         ],
       },
       {
@@ -343,7 +440,9 @@ const articles: SeoBlogPlan[] = [
       "Add real product details.",
       "Check policy and trademark risk before publishing.",
     ],
-    relatedTools: ["iScale Etsy", "iScale Listings"],
+    relatedTools: ["iscale-etsy", "readypixl"],
+    fitsNote:
+      "Research buyer language first, draft with AI second, and keep human review between draft and publish.",
   },
   {
     slug: "pinterest-automation-for-etsy-sellers",
@@ -374,7 +473,7 @@ const articles: SeoBlogPlan[] = [
         body: [
           "Automate pin draft creation from listing data. A product title, description, image, buyer, and occasion can become several pin angles.",
           "Automate scheduling so products keep getting fresh visibility. Consistency matters more than one large burst of pins.",
-          "Automate templates carefully. Use different crops, headlines, and contexts so the pins do not all look identical.",
+          "Automate templates carefully. Use different crops, headlines, and contexts so the pins do not all look identical. Research which pins already earn saves with [PinTwist](/projects/pintwist) — free on the [Chrome Web Store](https://chromewebstore.google.com/detail/jpafibmmnckjkpanchflenfbmggldmkk) — before you scale volume.",
         ],
       },
       {
@@ -392,7 +491,9 @@ const articles: SeoBlogPlan[] = [
       "Use board names that match buyer intent.",
       "Track clicks, not just impressions.",
     ],
-    relatedTools: ["Pin Twist", "PromoteFlow"],
+    relatedTools: ["pintwist", "iscale-etsy", "readypixl"],
+    fitsNote:
+      "Research pin demand first with PinTwist, align keywords with your Etsy listing data, then automate only the drafts that pass review.",
   },
   {
     slug: "personalized-print-on-demand-workflow",
@@ -422,7 +523,7 @@ const articles: SeoBlogPlan[] = [
         heading: "A cleaner order flow",
         body: [
           "Start with intake. Capture the buyer text, uploaded file, product type, order number, and any special instructions in one place.",
-          "Next run artwork checks: resolution, transparency, obvious copyright risk, readability, and whether the file fits the chosen product.",
+          "Next run artwork checks: resolution, transparency, obvious copyright risk, readability, and whether the file fits the chosen product. [ReadyPixl](https://readypixl.com) is live for the cleanup pass — background removal, upscale, and export presets — so customer uploads become print-ready files faster.",
           "Then create a proof and a print-ready export. Store both with consistent names so support, production, and future edits are easier.",
         ],
       },
@@ -441,7 +542,9 @@ const articles: SeoBlogPlan[] = [
       "Use consistent file names.",
       "Keep a human approval step for custom artwork.",
     ],
-    relatedTools: ["AutoMerch", "iScale Listings"],
+    relatedTools: ["readypixl", "iscale-images", "pixel-mock"],
+    fitsNote:
+      "Treat personalization as an ops pipeline: intake, cleanup, proof, export — with human approval on emotional products.",
   },
   {
     slug: "background-removal-tools-for-print-on-demand",
@@ -473,14 +576,14 @@ const articles: SeoBlogPlan[] = [
         body: [
           "Preview the result on dark, light, and mid-tone backgrounds. Many residue problems only appear when the image is placed on a different color.",
           "Zoom into hair, typography, thin lines, and shadows. Those are the places background tools most often fail.",
-          "Check export size and file type. A tool that creates a clean preview but exports a low-resolution file may not be suitable for print.",
+          "Check export size and file type. A tool that creates a clean preview but exports a low-resolution file may not be suitable for print. [ReadyPixl](https://readypixl.com) is live for seller-focused background removal, upscale, and export presets — run the same edge checks on every batch before mockups.",
         ],
       },
       {
         heading: "Batch cleanup needs review",
         body: [
           "Batch background removal can save huge time, but it should not skip verification. Use a review pass for residue, holes, halos, and wrong crops.",
-          "The best workflow marks images as pending, cleaned, verified, and ready for listing so nothing gets uploaded by accident.",
+          "The best workflow marks images as pending, cleaned, verified, and ready for listing so nothing gets uploaded by accident. Free rights-cleared assets from [iScale Images](/projects/iscale-images) can also fill gaps when you need stock that is already production-ready.",
         ],
       },
     ],
@@ -491,7 +594,9 @@ const articles: SeoBlogPlan[] = [
       "Track cleaned versus approved files.",
       "Keep source images for rework.",
     ],
-    relatedTools: ["AutoMerch", "iScale Merch"],
+    relatedTools: ["readypixl", "iscale-images", "pixel-mock"],
+    fitsNote:
+      "Background removal is only finished after edge review — not after the first AI cutout preview.",
   },
   {
     slug: "etsy-ai-policy-original-designs-print-on-demand",
@@ -505,41 +610,44 @@ const articles: SeoBlogPlan[] = [
     audience: "POD sellers using AI images, templates, or AI-assisted listing workflows.",
     searchIntent: "Someone wants to understand Etsy AI/originality rules and how to stay safer.",
     whyNow: [
-      "Etsy expects sellers to disclose AI-created items where required and keep listings aligned with creativity standards.",
-      "POD sellers using templates, prompts, and automation need a stronger originality review.",
-      "Buyer trust can drop fast when products look mass-generated or misleading.",
+      "Etsy's Creativity Standards require sellers to disclose seller-prompted AI creations in the listing description.",
+      "POD sellers using templates, prompts, and automation need a stronger originality review than a one-click generator workflow.",
+      "Buyer trust can drop fast when products look mass-generated or misleading about how they were made.",
     ],
     sections: [
       {
         heading: "AI is not the same as originality",
         body: [
           "AI can help create artwork, drafts, and variations, but sellers still need to own the creative direction. A prompt dump is not a brand strategy.",
-          "For POD sellers, originality shows up in the niche, design concept, typography, buyer insight, product choice, and presentation.",
+          "For POD sellers, originality shows up in the niche, design concept, typography, buyer insight, product choice, and presentation. Marketplace rules care about whether you provided creative direction — not whether a tool touched the file.",
         ],
       },
       {
         heading: "Disclosure and trust",
         body: [
-          "If a marketplace requires AI disclosure for certain creations, treat that as part of the listing workflow. The point is not just compliance. It helps buyers understand what they are purchasing.",
-          "Avoid descriptions that imply handmade physical production if the product is fulfilled by a print provider. Be clear about what is designed by the seller and what is produced by a partner.",
+          "Under Etsy's Creativity Standards, sellers must disclose within the listing description when an item is created with the use of AI (for example, seller-prompted image generation). Treat disclosure as a fixed step in your listing checklist, not an afterthought.",
+          "A short, factual line is enough: state that AI tools were used based on your creative direction. Do not bury it, and do not oversell handmade production if a print partner fulfills the physical item.",
+          "Avoid descriptions that imply handmade physical production if the product is fulfilled by a print provider. Be clear about what is designed by the seller and what is produced by a partner. Always re-check Etsy's current Creativity Standards and seller handbook before you change shop policy.",
         ],
       },
       {
         heading: "A safer AI-assisted workflow",
         body: [
           "Start with your own concept and buyer. Use AI for exploration, then refine the output into something specific. Check for protected characters, brand names, slogans, and style imitation.",
-          "Keep notes on the prompt, edits, and final source file. That gives you a record of what was created and why it belongs to your shop.",
+          "Keep notes on the prompt, edits, and final source file. That gives you a record of what was created and why it belongs to your shop. Research real demand with [iScale Etsy](/projects/iscale-etsy) on the [Chrome Web Store](https://chromewebstore.google.com/detail/fmeiigklgemlfcnpbdjeipdkogieidkm) so you are not flooding the shop with generic AI designs nobody searches for.",
         ],
       },
     ],
     checklist: [
-      "Disclose AI-created work where required.",
+      "Disclose AI-created work in the listing description when Etsy requires it.",
       "Do not use protected brands, names, or characters.",
-      "Avoid generic prompt-only designs.",
-      "Keep notes on prompts and edits.",
+      "Avoid generic prompt-only designs with no creative direction.",
+      "Keep notes on prompts, edits, and source files.",
       "Make the fulfillment method clear to buyers.",
     ],
-    relatedTools: ["iScale Etsy", "AutoMerch"],
+    relatedTools: ["iscale-etsy", "readypixl"],
+    fitsNote:
+      "Policy safety and originality review belong in the same workflow as research and listing drafts — not as a separate panic step after publish.",
   },
   {
     slug: "vibe-coded-app-launch-checklist",
@@ -570,7 +678,7 @@ const articles: SeoBlogPlan[] = [
         heading: "The minimum launch page",
         body: [
           "Use a clear name, one-line promise, real screenshot, status, category, builder, and next step. If the product is coming soon, say that, but still let people comment or follow the project.",
-          "Add enough metadata that directories, search engines, and AI search systems can understand the product without guessing.",
+          "Add enough metadata that directories, search engines, and AI search systems can understand the product without guessing. List it on [iScaleXchange](/explore) so sellers and builders can find the problem you solve.",
         ],
       },
       {
@@ -588,7 +696,9 @@ const articles: SeoBlogPlan[] = [
       "Allow comments or feedback.",
       "Create launch posts from the build story.",
     ],
-    relatedTools: ["iScaleXchange", "PromoteFlow"],
+    relatedTools: ["iscalexchange"],
+    fitsNote:
+      "A directory listing is the home base for demos, social posts, and feedback — not a replacement for a clear product promise.",
   },
   {
     slug: "best-tools-for-print-on-demand-beginners",
@@ -617,7 +727,8 @@ const articles: SeoBlogPlan[] = [
       {
         heading: "The beginner stack",
         body: [
-          "Use one research method to understand niches and buyer language. Use one design tool to create or edit artwork. Use one mockup workflow to create clean product images.",
+          "Use one research method to understand niches and buyer language. Free Chrome extensions help here: [iScale Etsy](https://chromewebstore.google.com/detail/fmeiigklgemlfcnpbdjeipdkogieidkm) for Etsy research, [iScale Merch](https://chromewebstore.google.com/detail/cdahaaaepjicdklfgohgfkmocnicjffg) for Amazon Merch niches, and [PinTwist](https://chromewebstore.google.com/detail/jpafibmmnckjkpanchflenfbmggldmkk) for Pinterest signal research.",
+          "Use one design or cleanup tool to create or edit artwork. [ReadyPixl](https://readypixl.com) is live for upscale, background removal, and POD-oriented image presets. Then use one mockup workflow to create clean product images.",
           "Then use the marketplace tools you need for listing and fulfillment. Add automation only after you have repeated the same task enough times to know exactly what should happen.",
         ],
       },
@@ -636,7 +747,9 @@ const articles: SeoBlogPlan[] = [
       "Choose one marketplace first.",
       "Automate only repeated tasks.",
     ],
-    relatedTools: ["iScale Etsy", "AutoMerch", "Pin Twist"],
+    relatedTools: ["iscale-etsy", "iscale-merch", "pintwist", "readypixl"],
+    fitsNote:
+      "Begin with free research extensions and one image-prep tool, then expand only after you have shipped a few real listings.",
   },
   {
     slug: "how-to-promote-a-new-ai-tool",
@@ -659,7 +772,7 @@ const articles: SeoBlogPlan[] = [
         heading: "Create the product home base",
         body: [
           "Before promotion, create a page that explains the tool clearly. Include the name, promise, screenshots, status, builder, pricing if known, and a way to comment or join.",
-          "This page becomes the link for directory submissions, social posts, videos, newsletters, and replies.",
+          "This page becomes the link for directory submissions, social posts, videos, newsletters, and replies. List it on [iScaleXchange](/explore) so the exchange page can act as a durable discovery URL alongside your own site.",
         ],
       },
       {
@@ -684,7 +797,9 @@ const articles: SeoBlogPlan[] = [
       "Create short demo clips.",
       "Turn user questions into content.",
     ],
-    relatedTools: ["PromoteFlow", "iScaleXchange"],
+    relatedTools: ["iscalexchange"],
+    fitsNote:
+      "Directories work when they point back to a clear product home base — screenshots, promise, and a next step.",
   },
 ]
 
@@ -715,13 +830,17 @@ ${article.checklist.map((item) => `- ${item}`).join("\n")}
 
 ## Where iScaleXchange fits
 
-iScaleXchange is a directory for builders, seller tools, automation projects, and product experiments. Use it to discover tools, follow coming-soon projects, leave comments, and watch how real builder workflows turn into products.
+iScaleXchange is a directory for builders, seller tools, automation projects, and product experiments. ${article.fitsNote}
 
-Related iScaleLabs tools and projects to watch: ${article.relatedTools.join(", ")}.
+### Tools worth watching for this workflow
+
+${formatRelatedTools(article.relatedTools)}
 
 ## Next step
 
-Explore current and coming-soon tools on [iScaleXchange](/explore), or submit a tool if you are building something useful for sellers, creators, AI builders, or ecommerce operators.`
+Explore current tools on [iScaleXchange](/explore), install free research extensions from the Chrome Web Store, or try [ReadyPixl](${READYPIXL_URL}) for bulk image prep. Submit a tool if you are building something useful for sellers, creators, AI builders, or ecommerce operators.
+
+*Last reviewed: ${LAST_REVIEWED}.*`
 }
 
 async function seed() {
@@ -758,13 +877,13 @@ async function seed() {
           author: "iScaleXchange Team",
           metaTitle: article.metaTitle,
           metaDescription: article.metaDescription,
-          publishedAt,
+          // Keep original publish dates; only bump updatedAt on refresh.
           updatedAt: now,
         },
       })
   }
 
-  console.log(`Seeded ${articles.length} SEO blog articles.`)
+  console.log(`Seeded ${articles.length} SEO blog articles (last reviewed ${LAST_REVIEWED}).`)
 }
 
 seed()

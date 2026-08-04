@@ -7,6 +7,7 @@ import { notFound } from "next/navigation"
 import { RiGithubFill, RiHashtag, RiTwitterFill, RiVipCrownLine } from "@remixicon/react"
 import { format } from "date-fns"
 
+import { externalProjectLinkLabel, isChromeWebStoreUrl } from "@/lib/chrome-store"
 import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { isUpvotingOpen } from "@/lib/launch-utils"
 import { sanitizeRichText } from "@/lib/sanitize-html"
@@ -427,18 +428,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Sidebar - 1 colonne sur toute la hauteur */}
           <div className="lg:sticky lg:top-14 lg:h-fit">
             <div className="space-y-6 py-6">
-              {/* Visit Website / external link (renders website_url) */}
+              {/* Primary external link (Chrome Web Store, GitHub, or product site) */}
               {projectData.websiteUrl && (
                 <Button asChild size="lg" className="w-full gap-2">
                   <a href={projectData.websiteUrl} target="_blank" rel="noopener noreferrer">
                     {projectData.websiteUrl.includes("github.com") && (
                       <RiGithubFill className="h-4 w-4" />
                     )}
-                    {projectData.websiteUrl.includes("github.com")
-                      ? "View on GitHub"
-                      : "Visit Website"}
+                    {externalProjectLinkLabel(projectData.websiteUrl)}
                   </a>
                 </Button>
+              )}
+              {/* Secondary Chrome note when GitHub is primary but store also exists via website */}
+              {isChromeWebStoreUrl(projectData.websiteUrl) && projectData.githubUrl && (
+                <p className="text-muted-foreground -mt-3 text-center text-xs">
+                  Free Chrome extension · source on{" "}
+                  <a
+                    href={projectData.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    GitHub
+                  </a>
+                </p>
               )}
               {/* Achievement Badge */}
               {!isScheduled &&

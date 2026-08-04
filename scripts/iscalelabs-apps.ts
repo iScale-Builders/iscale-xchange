@@ -1,3 +1,5 @@
+import { CHROME_WEB_STORE } from "@/lib/chrome-store"
+
 export interface IScaleLabsAppSeed {
   name: string
   slug: string
@@ -10,6 +12,8 @@ export interface IScaleLabsAppSeed {
   logoUrl: string
   githubUrl?: string
   launchStatus?: "scheduled" | "ongoing" | "launched"
+  /** Explicit status badge: coming_soon | testing | available */
+  availability?: "coming_soon" | "testing" | "available"
   techStack: string[]
   pricing: "free" | "paid"
   platforms: string[]
@@ -40,11 +44,13 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     name: "PinTwist",
     slug: "pintwist",
     description:
-      "PinTwist is the open-source Pinterest research extension for print-on-demand sellers: it overlays save counts, reactions, comments, repins, and creation dates on every pin, then lets you sort, filter, build a local catalog, and export CSV — 100% local, no account or backend. Free and open source (Apache-2.0), full code public on GitHub.",
-    websiteUrl: listingUrl("pintwist"),
+      "PinTwist is the open-source Pinterest research extension for print-on-demand sellers: it overlays save counts, reactions, comments, repins, and creation dates on every pin, then lets you sort, filter, build a local catalog, and export CSV — 100% local, no account or backend. Free on the Chrome Web Store and open source (Apache-2.0) on GitHub.",
+    websiteUrl: CHROME_WEB_STORE.pintwist,
     productImage: "/images/apps/pintwist-1.webp",
     logoUrl: "/images/apps/pintwist-3.webp",
     githubUrl: "https://github.com/iScale-Builders/pintwist",
+    launchStatus: "launched",
+    availability: "available",
     techStack: ["Chrome Extension", "JavaScript", "Local-first", "Open Source", "Apache-2.0"],
     pricing: "free",
     platforms: ["web"],
@@ -55,11 +61,14 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     name: "iScale Etsy",
     slug: "iscale-etsy",
     description:
-      "iScale Etsy is the Etsy research lane for finding product angles, shop patterns, listing opportunities, and marketplace signals that can turn print-on-demand ideas into sharper Etsy execution.",
-    websiteUrl: listingUrl("iscale-etsy"),
+      "iScale Etsy is a local-first Chrome extension for Etsy product research: batch scrape jobs, search-results capture, local Shop View, and CSV import/export. Free on the Chrome Web Store — no backend, no account, no telemetry.",
+    websiteUrl: CHROME_WEB_STORE.iscaleEtsy,
     productImage: thumbnail("iscale-etsy"),
     logoUrl: realAsset("iscale-etsy-icon-128.png"),
-    techStack: ["Research", "Data Pipeline", "Marketplace Analysis"],
+    githubUrl: "https://github.com/iScale-Builders/iscale-etsy",
+    launchStatus: "launched",
+    availability: "available",
+    techStack: ["Chrome Extension", "Research", "Data Pipeline", "Local-first"],
     pricing: "free",
     platforms: ["web"],
     categories: ["Research", "Etsy", "Listings"],
@@ -69,12 +78,14 @@ export const iscaleLabsApps: IScaleLabsAppSeed[] = [
     name: "iScale Merch",
     slug: "iscale-merch",
     description:
-      "iScale Merch is the Merch by Amazon command lane for POD operators: research, listing strategy, Chrome extension workflows, and the future bridge between product data and execution.",
-    websiteUrl: listingUrl("iscale-merch"),
+      "iScale Merch is the Merch by Amazon research extension for POD operators: BSR, recent-upload dates, competition density, scans, and local CSV exports right on Amazon pages. Free on the Chrome Web Store — research data stays on your device.",
+    websiteUrl: CHROME_WEB_STORE.iscaleMerch,
     productImage: "/images/apps/iscalemerch-1.webp",
     coverImage: "/images/apps/iscalemerch-2.webp",
     logoUrl: "/images/apps/iscalemerch-3.webp",
-    techStack: ["Chrome Extension", "Amazon Merch", "Next.js"],
+    launchStatus: "launched",
+    availability: "available",
+    techStack: ["Chrome Extension", "Amazon Merch", "Local-first", "Research"],
     pricing: "free",
     platforms: ["web"],
     categories: ["Amazon Merch", "Research", "Listings"],

@@ -12,6 +12,8 @@
     "lint": "next lint",
     "prepare": "npx simple-git-hooks",
     "seed:iscalelabs-apps": "tsx scripts/seed-iscalelabs-apps.ts",
+    "seed:seo-blog": "tsx scripts/seed-seo-blog-articles.ts",
+    "update:chrome-store-links": "tsx scripts/update-chrome-store-links.ts",
     "seo:indexnow": "tsx scripts/submit-indexnow.ts",
     "start": "next start"
   },
