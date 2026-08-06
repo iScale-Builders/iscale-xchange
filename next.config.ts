@@ -19,6 +19,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   /* config options here */
 
+  // iScaleXchange is a dedicated Next.js zone mounted by iscalelabs-webapp.
+  // Next inlines this at build time for Link/router and framework assets.
+  basePath: "/iscalexchange",
+
   // TypeScript errors DO fail the build — the code type-checks clean and a type
   // error is a real defect worth blocking a deploy over. ESLint stays
   // non-blocking (it also passes clean; enforce it in CI) so a trivial lint nit

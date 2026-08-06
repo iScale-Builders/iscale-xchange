@@ -18,6 +18,7 @@ import { ArrowLeft, Calendar, Clock } from "lucide-react"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 
+import { appPath } from "@/lib/base-path"
 import { DOMAIN_AUTHORITY, LAUNCH_SETTINGS } from "@/lib/constants"
 import { breadcrumbSchema } from "@/lib/seo/schema"
 import { Button } from "@/components/ui/button"
@@ -192,7 +193,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                 {article[0].image && (
                   <div className="bg-muted border-border mb-8 aspect-[16/9] overflow-hidden rounded-2xl border">
                     <img
-                      src={article[0].image}
+                      src={appPath(article[0].image)}
                       alt={title}
                       className="h-full w-full object-cover"
                     />

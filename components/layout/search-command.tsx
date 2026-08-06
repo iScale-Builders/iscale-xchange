@@ -18,6 +18,7 @@ import {
   RiSearchLine,
 } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { useSearch } from "@/lib/hooks/use-search"
 import { CommandDialog, CommandInput } from "@/components/ui/command"
 import { DialogTitle } from "@/components/ui/dialog"
@@ -153,7 +154,7 @@ export function SearchCommand() {
               {result.type === "project" && result.logoUrl ? (
                 <div className="border-border mr-2 h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border">
                   <img
-                    src={result.logoUrl}
+                    src={appPath(result.logoUrl)}
                     alt={result.name}
                     className="h-full w-full object-cover"
                     onError={(e) => {

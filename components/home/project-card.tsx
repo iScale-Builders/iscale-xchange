@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+import { appPath } from "@/lib/base-path"
 import { toolStatusLabel } from "@/lib/tool-status"
 
 import { ProjectCardButtons } from "./project-card-buttons"
@@ -69,10 +70,14 @@ export function ProjectCard({
         <div className="flex-shrink-0">
           <div className="bg-muted border-border relative h-12 w-12 overflow-hidden rounded-lg border sm:h-14 sm:w-14">
             {logoUrl && logoIsUploadedDataImage ? (
-              <img src={logoUrl} alt={`${name} logo`} className="h-full w-full object-contain" />
+              <img
+                src={appPath(logoUrl)}
+                alt={`${name} logo`}
+                className="h-full w-full object-contain"
+              />
             ) : logoUrl ? (
               <Image
-                src={logoUrl}
+                src={appPath(logoUrl)}
                 alt={`${name} logo`}
                 fill
                 className="object-contain"

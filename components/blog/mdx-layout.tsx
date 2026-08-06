@@ -4,6 +4,8 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { ArrowLeft, Calendar, Clock } from "lucide-react"
 
+import { appPath } from "@/lib/base-path"
+
 import { ArticleFooter } from "./article-footer"
 import { TableOfContents } from "./table-of-contents"
 
@@ -81,7 +83,7 @@ export default function MdxLayout({ children, frontmatter }: MdxLayoutProps) {
             {frontmatter?.image && (
               <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-lg border">
                 <Image
-                  src={frontmatter.image}
+                  src={appPath(frontmatter.image)}
                   alt={frontmatter.title || "Image de l'article"}
                   fill
                   className="object-cover"

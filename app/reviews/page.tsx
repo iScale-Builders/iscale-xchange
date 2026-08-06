@@ -6,6 +6,8 @@ import { db } from "@/drizzle/db"
 import { seoArticle } from "@/drizzle/db/schema"
 import { Calendar, Clock } from "lucide-react"
 
+import { appPath } from "@/lib/base-path"
+
 export const metadata: Metadata = {
   title: "Product Reviews — In-Depth Product Analysis",
   description:
@@ -113,7 +115,7 @@ export default async function ReviewsPage() {
                   <div className="bg-muted border-border relative aspect-[16/9] overflow-hidden border-b">
                     {review.image ? (
                       <img
-                        src={review.image}
+                        src={appPath(review.image)}
                         alt={review.title}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-103"
                       />

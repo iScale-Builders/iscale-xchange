@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { appPath } from "@/lib/base-path"
 import { cn } from "@/lib/utils"
 
 const READYPIXL_URL = "https://readypixl.com"
@@ -28,7 +29,7 @@ export function ReadyPixlSponsorLink({ variant = "footer" }: ReadyPixlSponsorLin
       <span className="flex items-center justify-center gap-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/sponsors/rp-square.png"
+          src={appPath("/images/sponsors/rp-square.png")}
           alt=""
           width={36}
           height={36}
@@ -37,7 +38,7 @@ export function ReadyPixlSponsorLink({ variant = "footer" }: ReadyPixlSponsorLin
         <span className="flex h-8 w-32 items-center justify-center overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/sponsors/readypixl-wordmark-dark.svg"
+            src={appPath("/images/sponsors/readypixl-wordmark-dark.svg")}
             alt="ReadyPixl"
             width={120}
             height={32}
@@ -45,7 +46,7 @@ export function ReadyPixlSponsorLink({ variant = "footer" }: ReadyPixlSponsorLin
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/sponsors/readypixl-wordmark-light.svg"
+            src={appPath("/images/sponsors/readypixl-wordmark-light.svg")}
             alt="ReadyPixl"
             width={120}
             height={32}

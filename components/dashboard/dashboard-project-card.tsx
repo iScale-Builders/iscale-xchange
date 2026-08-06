@@ -6,6 +6,8 @@ import Link from "next/link"
 import { RiCalendarLine, RiCheckLine, RiMessage2Line, RiTimeLine } from "@remixicon/react"
 import { formatDistance } from "date-fns"
 
+import { appPath } from "@/lib/base-path"
+
 // Function to strip HTML tags from text
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -73,7 +75,7 @@ export function DashboardProjectCard({
   const cardContent = (
     <>
       <Image
-        src={logoUrl || "/placeholder.svg"} // Fallback si pas de logo
+        src={appPath(logoUrl || "/placeholder.svg")} // Fallback si pas de logo
         alt={name}
         width={48}
         height={48}

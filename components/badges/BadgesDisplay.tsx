@@ -6,6 +6,8 @@ import { useState } from "react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
 
+import { appPath } from "@/lib/base-path"
+
 import { CopyButton } from "./copy-button"
 import { ShowCode } from "./show-code"
 
@@ -48,7 +50,7 @@ export function BadgesDisplay({ dailyRanking, slug }: BadgesDisplayProps) {
         </div>
         <div className="flex w-full justify-center">
           <img
-            src={`/images/badges/top${dailyRanking}-light.svg`}
+            src={appPath(`/images/badges/top${dailyRanking}-light.svg`)}
             alt={`iScaleXchange Top ${dailyRanking} Daily Winner`}
             className="h-auto w-[195px]"
           />
@@ -73,7 +75,7 @@ export function BadgesDisplay({ dailyRanking, slug }: BadgesDisplayProps) {
         </div>
         <div className="flex w-full justify-center">
           <img
-            src={`/images/badges/top${dailyRanking}-dark.svg`}
+            src={appPath(`/images/badges/top${dailyRanking}-dark.svg`)}
             alt={`iScaleXchange Top ${dailyRanking} Daily Winner`}
             className="h-auto w-[195px]"
           />

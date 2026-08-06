@@ -1,6 +1,6 @@
 {
   "name": "iscalexchange",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -13,9 +13,9 @@
     "prepare": "npx simple-git-hooks",
     "seed:iscalelabs-apps": "tsx scripts/seed-iscalelabs-apps.ts",
     "seed:seo-blog": "tsx scripts/seed-seo-blog-articles.ts",
-    "update:chrome-store-links": "tsx scripts/update-chrome-store-links.ts",
     "seo:indexnow": "tsx scripts/submit-indexnow.ts",
-    "start": "next start"
+    "start": "next start",
+    "update:chrome-store-links": "tsx scripts/update-chrome-store-links.ts"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged --verbose",

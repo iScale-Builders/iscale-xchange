@@ -54,3 +54,20 @@ seo-article.ts
 *.bak
 /test-results/
 .env*.local
+
+# Organization secret/build hygiene baseline
+.env.*
+secrets/
+credentials/
+tokens/
+keys/
+*.key
+*.p12
+*.pfx
+*.db
+*.sqlite
+node_modules/
+dist/
+build/
+.next/
+.vercel/

@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Image from "next/image"
 
+import { appPath } from "@/lib/base-path"
+
 interface ProjectImageWithLoaderProps {
   src: string
   alt: string
@@ -11,13 +13,14 @@ interface ProjectImageWithLoaderProps {
 export function ProjectImageWithLoader({ src, alt }: ProjectImageWithLoaderProps) {
   const [isLoading, setIsLoading] = useState(true)
   const isUploadedDataImage = src.startsWith("data:image/")
+  const resolvedSrc = appPath(src)
 
   return (
     <div className="relative overflow-hidden rounded-xl">
       {isLoading && <div className="bg-muted absolute inset-0 z-10 animate-pulse"></div>}
       {isUploadedDataImage ? (
         <img
-          src={src}
+          src={resolvedSrc}
           alt={alt}
           className="h-auto w-full object-cover"
           onLoad={() => setIsLoading(false)}
@@ -25,7 +28,7 @@ export function ProjectImageWithLoader({ src, alt }: ProjectImageWithLoaderProps
         />
       ) : (
         <Image
-          src={src}
+          src={resolvedSrc}
           alt={alt}
           width={800}
           height={400}

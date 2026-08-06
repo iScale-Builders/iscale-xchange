@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 
+import { appPath } from "@/lib/base-path"
+
 // Fire-and-forget first-party view beacon; feeds the /admin Site Analytics
 // panel. Must never throw or block navigation.
 export function PageTracker() {
@@ -18,11 +20,11 @@ export function PageTracker() {
     const payload = JSON.stringify({ path: pathname, referrer: document.referrer })
     try {
       const sent = navigator.sendBeacon?.(
-        "/api/pulse",
+        appPath("/api/pulse"),
         new Blob([payload], { type: "application/json" }),
       )
       if (!sent) {
-        fetch("/api/pulse", {
+        fetch(appPath("/api/pulse"), {
           method: "POST",
           body: payload,
           headers: { "Content-Type": "application/json" },

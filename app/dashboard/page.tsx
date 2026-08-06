@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 
 import { RiAddLine, RiHashtag, RiRocketLine, RiThumbUpLine } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { ensureLocalUser } from "@/lib/ensure-user"
 import { Button } from "@/components/ui/button"
 import {
@@ -42,7 +43,7 @@ export default async function Dashboard() {
 
   // If user is not logged in, we shouldn't be here
   if (!localUser) {
-    redirect("/sign-in")
+    redirect(appPath("/sign-in"))
   }
 
   // Get data from actions

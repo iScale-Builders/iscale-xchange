@@ -7,6 +7,8 @@ import { blogArticle } from "@/drizzle/db/schema"
 import { desc } from "drizzle-orm"
 import { Calendar, Clock } from "lucide-react"
 
+import { appPath } from "@/lib/base-path"
+
 export const metadata: Metadata = {
   title: "Blog — Insights & Resources",
   description:
@@ -62,7 +64,9 @@ export default async function BlogPage() {
         {/* Header */}
         <div className="scroll-live mb-8 text-center">
           <p className="foundry-kicker mb-3">Builder intelligence</p>
-          <h1 className="font-heading mb-4 text-4xl font-black text-foreground md:text-5xl">Blog</h1>
+          <h1 className="font-heading text-foreground mb-4 text-4xl font-black md:text-5xl">
+            Blog
+          </h1>
           <p className="text-muted-foreground text-md mx-auto max-w-4xl md:text-lg">
             Discover insights, tutorials, and resources to help you build and launch successful
             products.
@@ -112,7 +116,7 @@ export default async function BlogPage() {
                   <div className="bg-muted relative aspect-[16/9] overflow-hidden">
                     {article.image ? (
                       <img
-                        src={article.image}
+                        src={appPath(article.image)}
                         alt={article.title}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-103"
                       />

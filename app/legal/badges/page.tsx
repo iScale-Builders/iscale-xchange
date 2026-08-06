@@ -3,6 +3,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import Link from "next/link"
 
+import { appPath } from "@/lib/base-path"
 import { CopyButton } from "@/components/badges/copy-button"
 
 export const metadata = {
@@ -61,7 +62,7 @@ export default function AttributionBadgesPage() {
                   <h3 className="mb-3 text-lg font-medium">Light Theme Badge</h3>
                   <div className="mb-4 flex items-center gap-4">
                     <img
-                      src="/images/badges/powered-by-light.svg"
+                      src={appPath("/images/badges/powered-by-light.svg")}
                       alt="Powered by Open-Launch - Light Theme"
                       className="h-11 w-auto rounded"
                     />
@@ -81,7 +82,7 @@ export default function AttributionBadgesPage() {
                   <h3 className="mb-3 text-lg font-medium">Dark Theme Badge</h3>
                   <div className="mb-4 flex items-center gap-4">
                     <img
-                      src="/images/badges/powered-by-dark.svg"
+                      src={appPath("/images/badges/powered-by-dark.svg")}
                       alt="Powered by Open-Launch - Dark Theme"
                       className="h-11 w-auto rounded"
                     />

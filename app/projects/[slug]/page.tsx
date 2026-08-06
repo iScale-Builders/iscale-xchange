@@ -7,6 +7,7 @@ import { notFound } from "next/navigation"
 import { RiGithubFill, RiHashtag, RiTwitterFill, RiVipCrownLine } from "@remixicon/react"
 import { format } from "date-fns"
 
+import { appPath } from "@/lib/base-path"
 import { externalProjectLinkLabel, isChromeWebStoreUrl } from "@/lib/chrome-store"
 import { getSyncedCurrentUserId } from "@/lib/ensure-user"
 import { isUpvotingOpen } from "@/lib/launch-utils"
@@ -157,13 +158,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <div className="bg-card border-border h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border">
                     {projectData.logoUrl && logoIsUploadedDataImage ? (
                       <img
-                        src={projectData.logoUrl}
+                        src={appPath(projectData.logoUrl)}
                         alt={`${projectData.name} Logo`}
                         className="h-full w-full object-cover"
                       />
                     ) : projectData.logoUrl ? (
                       <Image
-                        src={projectData.logoUrl}
+                        src={appPath(projectData.logoUrl)}
                         alt={`${projectData.name} Logo`}
                         width={64}
                         height={64}
@@ -232,13 +233,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <div className="bg-card border-border h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border">
                     {projectData.logoUrl && logoIsUploadedDataImage ? (
                       <img
-                        src={projectData.logoUrl}
+                        src={appPath(projectData.logoUrl)}
                         alt={`${projectData.name} Logo`}
                         className="h-full w-full object-cover"
                       />
                     ) : projectData.logoUrl ? (
                       <Image
-                        src={projectData.logoUrl}
+                        src={appPath(projectData.logoUrl)}
                         alt={`${projectData.name} Logo`}
                         width={64}
                         height={64}
@@ -464,12 +465,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     </h3>
                     <div className="flex">
                       <img
-                        src={`/images/badges/top${projectData.dailyRanking}-light.svg`}
+                        src={appPath(`/images/badges/top${projectData.dailyRanking}-light.svg`)}
                         alt={`iScaleXchange Top ${projectData.dailyRanking} Daily Winner`}
                         className="h-12 w-auto dark:hidden"
                       />
                       <img
-                        src={`/images/badges/top${projectData.dailyRanking}-dark.svg`}
+                        src={appPath(`/images/badges/top${projectData.dailyRanking}-dark.svg`)}
                         alt={`iScaleXchange Top ${projectData.dailyRanking} Daily Winner`}
                         className="hidden h-12 w-auto dark:block"
                       />

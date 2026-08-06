@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from "react"
 
 import { RiArrowLeftSLine, RiArrowRightSLine, RiCloseLine } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
+
 interface ListingImagesProps {
   banner: string
   images: string[]
@@ -13,7 +15,9 @@ interface ListingImagesProps {
 
 export function ListingImages({ banner, images, name }: ListingImagesProps) {
   // Ordered, de-duplicated set used by the lightbox (banner first).
-  const all = Array.from(new Set([banner, ...images].filter(Boolean)))
+  const resolvedBanner = appPath(banner)
+  const resolvedImages = images.map(appPath)
+  const all = Array.from(new Set([resolvedBanner, ...resolvedImages].filter(Boolean)))
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const close = useCallback(() => setOpenIndex(null), [])
@@ -51,7 +55,7 @@ export function ListingImages({ banner, images, name }: ListingImagesProps) {
       >
         <div className="aspect-[16/9] w-full overflow-hidden rounded-xl border">
           <img
-            src={banner}
+            src={resolvedBanner}
             alt={`${name} - Product Image`}
             loading="eager"
             fetchPriority="high"
@@ -61,9 +65,9 @@ export function ListingImages({ banner, images, name }: ListingImagesProps) {
         </div>
       </button>
 
-      {images.length > 1 && (
+      {resolvedImages.length > 1 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {images.slice(0, 10).map((image, index) => (
+          {resolvedImages.slice(0, 10).map((image, index) => (
             <button
               key={`${image}-${index}`}
               type="button"

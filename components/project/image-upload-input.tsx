@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { RiCloseLine, RiImageAddLine, RiLoader4Line } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -188,7 +189,7 @@ export function ImageUploadInput({
       {value && !previewFailed && (
         <div className={`bg-muted relative overflow-hidden rounded-lg border ${previewClassName}`}>
           <img
-            src={value}
+            src={appPath(value)}
             alt={`${label} preview`}
             className="h-full w-full object-cover"
             onError={() => setPreviewFailed(true)}

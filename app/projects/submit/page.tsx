@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 
 import { RiArrowRightLine } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { ensureLocalUser } from "@/lib/ensure-user"
 import { SubmitProjectForm } from "@/components/project/submit-form"
 import { SubmitProblemForm } from "@/components/project/submit-problem-form"
@@ -17,7 +18,7 @@ export default async function SubmitProject({
   const localUser = await ensureLocalUser()
 
   if (!localUser) {
-    redirect("/sign-in")
+    redirect(appPath("/sign-in"))
   }
 
   const { type } = await searchParams

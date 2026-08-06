@@ -18,6 +18,7 @@ import {
 } from "@remixicon/react"
 import { Tag, TagInput } from "emblor"
 
+import { appPath } from "@/lib/base-path"
 import { LAUNCH_TYPES } from "@/lib/constants"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -93,7 +94,9 @@ export function SubmitProjectForm() {
 
   const checkWebsiteUrl = async (url: string) => {
     try {
-      const response = await fetch(`/api/projects/check-url?url=${encodeURIComponent(url)}`)
+      const response = await fetch(
+        appPath(`/api/projects/check-url?url=${encodeURIComponent(url)}`),
+      )
       const data = await response.json()
       return data.exists
     } catch (error) {
@@ -675,7 +678,7 @@ export function SubmitProjectForm() {
                       <p className="flex flex-col items-start gap-2">
                         <strong>Logo:</strong>
                         <img
-                          src={uploadedLogoUrl}
+                          src={appPath(uploadedLogoUrl)}
                           alt="Uploaded logo"
                           className="h-12 w-12 rounded border object-contain"
                         />
@@ -685,7 +688,7 @@ export function SubmitProjectForm() {
                       <p className="flex flex-col items-start gap-2">
                         <strong>Product Image:</strong>
                         <img
-                          src={formData.productImage}
+                          src={appPath(formData.productImage)}
                           alt="Product image"
                           className="h-32 w-56 rounded border object-cover"
                         />

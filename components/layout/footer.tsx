@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { RiGithubFill } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { ReadyPixlSponsorLink } from "@/components/sponsor/readypixl-sponsor-link"
 
 // Link groups for a columnar layout
@@ -43,7 +44,11 @@ export default function FooterSection() {
           <div className="flex flex-col items-start text-left md:col-span-4 lg:col-span-4">
             <Link href="/" prefetch={false} className="font-heading mb-3 flex items-center">
               <span className="font-heading flex items-center text-xl font-black tracking-tight">
-                <img src="/logo.png" alt="iScaleXchange logo" className="mr-2 h-9 w-9 rounded-md" />
+                <img
+                  src={appPath("/logo.png")}
+                  alt="iScaleXchange logo"
+                  className="mr-2 h-9 w-9 rounded-md"
+                />
                 <span className="text-foreground">iScaleXchange</span>
               </span>
             </Link>
@@ -69,14 +74,14 @@ export default function FooterSection() {
             <div className="flex items-center justify-start space-x-3">
               <a href="https://open-launch.com" target="_blank" title="Powered by Open-Launch">
                 <img
-                  src="/images/badges/powered-by-light.svg"
+                  src={appPath("/images/badges/powered-by-light.svg")}
                   alt="Powered by Open-Launch"
                   width={150}
                   height={44}
                   className="block dark:hidden"
                 />
                 <img
-                  src="/images/badges/powered-by-dark.svg"
+                  src={appPath("/images/badges/powered-by-dark.svg")}
                   alt="Powered by Open-Launch"
                   width={150}
                   height={44}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { appPath } from "@/lib/base-path"
 import { SearchResult } from "@/app/api/search/route"
 
 interface UseSearchOptions {
@@ -64,7 +65,7 @@ export function useSearch({
         console.log(`[useSearch] Searching for: "${query}"`)
 
         // Appeler l'API de recherche
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        const response = await fetch(appPath(`/api/search?q=${encodeURIComponent(query)}`))
 
         const data = await response.json()
 

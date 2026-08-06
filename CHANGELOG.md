@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.3] - 2026-08-06
+
+### Changed
+
+- Mount the complete iScaleXchange application under
+  `https://www.iscalelabs.com/iscalexchange` as an independent Next.js zone.
+- Prefix browser-authored API requests and local public assets for the new
+  base path while preserving Next.js links, application routes, and data.
+
+### Fixed
+
+- Match Clerk middleware at the exact zone root so the homepage can call
+  `auth()` without a production server error.
+
 ## [0.10.2] - 2026-06-25
 
 ### Changed

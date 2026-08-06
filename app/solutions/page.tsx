@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { RiArrowRightLine, RiArrowUpLine, RiChat3Line } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
 import { getSolutions } from "@/app/actions/solutions"
@@ -77,7 +78,7 @@ export default async function SolutionsPage() {
                 {s.logoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={s.logoUrl}
+                    src={appPath(s.logoUrl)}
                     alt=""
                     className="border-border/60 mb-4 aspect-video w-full rounded-lg border object-cover"
                   />

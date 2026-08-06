@@ -4,6 +4,7 @@ import Link from "next/link"
 
 import { RiArrowRightLine, RiFireLine, RiMessage2Line, RiThumbUpFill } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { toolStatusLabel } from "@/lib/tool-status"
 import { Button } from "@/components/ui/button"
 import { ExploreGridCard } from "@/components/explore/explore-grid-card"
@@ -12,7 +13,8 @@ import { ToolThumbnail } from "@/components/shared/tool-thumbnail"
 import type { ExploreProject } from "@/app/actions/explore"
 
 export function thumbnailFor(productImage: string | null, coverImageUrl: string | null) {
-  return productImage || coverImageUrl
+  const image = productImage || coverImageUrl
+  return image ? appPath(image) : image
 }
 
 // Distinct images for a tool, in display order, for the per-card image cycler.
@@ -29,11 +31,13 @@ export function galleryFor(p: {
       return Boolean(image) && image !== logoUrl
     })
     .slice(0, 10)
-  if (savedGallery?.length) return Array.from(new Set(savedGallery))
+  if (savedGallery?.length) return Array.from(new Set(savedGallery.map(appPath)))
 
   return Array.from(
     new Set(
-      [p.productImage, p.coverImageUrl].filter((x): x is string => !!x && x.trim().length > 0),
+      [p.productImage, p.coverImageUrl]
+        .filter((x): x is string => !!x && x.trim().length > 0)
+        .map(appPath),
     ),
   )
 }

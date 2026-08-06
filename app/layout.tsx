@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 
+import { appPath } from "@/lib/base-path"
 import { organizationSchema, websiteSchema } from "@/lib/seo/schema"
 import {
   DEFAULT_TITLE,
@@ -62,7 +63,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      signInUrl={appPath("/sign-in")}
+      signUpUrl={appPath("/sign-up")}
+      signInFallbackRedirectUrl={appPath("/")}
+      signUpFallbackRedirectUrl={appPath("/")}
+      afterSignOutUrl={appPath("/")}
+    >
       <html lang="en" suppressHydrationWarning>
         <head>
           <JsonLd data={[organizationSchema(SOCIAL_PROFILES), websiteSchema()]} />

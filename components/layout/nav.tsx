@@ -15,6 +15,7 @@ import {
   RiUserAddLine,
 } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { ensureLocalUser } from "@/lib/ensure-user"
 import {
   Sheet,
@@ -66,7 +67,11 @@ export default async function Nav() {
         <div className="flex items-center gap-8">
           <Link href="/" prefetch={false} className="font-heading flex items-center">
             <span className="font-heading flex items-center text-xl font-black tracking-tight">
-              <img src="/logo.png" alt="iScaleXchange logo" className="mr-2 h-10 w-10 rounded-md" />
+              <img
+                src={appPath("/logo.png")}
+                alt="iScaleXchange logo"
+                className="mr-2 h-10 w-10 rounded-md"
+              />
               <span className="text-foreground">iScaleXchange</span>
             </span>
           </Link>

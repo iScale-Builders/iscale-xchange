@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { RiArrowRightLine, RiArrowUpLine, RiChat3Line } from "@remixicon/react"
 
+import { appPath } from "@/lib/base-path"
 import { Button } from "@/components/ui/button"
 import { getProblems } from "@/app/actions/problems"
 
@@ -83,7 +84,7 @@ export default async function ProblemsPage() {
                 {p.logoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={p.logoUrl}
+                    src={appPath(p.logoUrl)}
                     alt=""
                     className="border-border/60 mb-4 aspect-video w-full rounded-lg border object-cover"
                   />

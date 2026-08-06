@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 
 import { formatDistanceToNow } from "date-fns"
 
+import { appPath } from "@/lib/base-path"
 import { extractTextFromContent } from "@/lib/content-utils"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -87,7 +88,7 @@ export function ProjectComments({
       setErrorMessage(null)
 
       try {
-        const response = await fetch(`/api/comments/${projectId}`, {
+        const response = await fetch(appPath(`/api/comments/${projectId}`), {
           credentials: "same-origin",
         })
 
@@ -125,7 +126,7 @@ export function ProjectComments({
     setErrorMessage(null)
 
     try {
-      const response = await fetch(`/api/comments/${projectId}`, {
+      const response = await fetch(appPath(`/api/comments/${projectId}`), {
         method: "POST",
         credentials: "same-origin",
         headers: {
@@ -171,7 +172,7 @@ export function ProjectComments({
     setErrorMessage(null)
 
     try {
-      const response = await fetch(`/api/comments/${projectId}/${comment.id}`, {
+      const response = await fetch(appPath(`/api/comments/${projectId}/${comment.id}`), {
         method: "PATCH",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

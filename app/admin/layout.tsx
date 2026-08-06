@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 
 import { auth } from "@clerk/nextjs/server"
 
+import { appPath } from "@/lib/base-path"
 import { getLocalUser } from "@/lib/ensure-user"
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -10,13 +11,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { userId } = await auth()
 
   if (!userId) {
-    redirect("/")
+    redirect(appPath("/"))
   }
 
   const localUser = await getLocalUser(userId)
 
   if (!localUser || localUser.role !== "admin") {
-    redirect("/")
+    redirect(appPath("/"))
   }
 
   return <div>{children}</div>

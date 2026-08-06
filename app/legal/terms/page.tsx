@@ -2,6 +2,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import Link from "next/link"
 
+import { appPath } from "@/lib/base-path"
+
 export const metadata = {
   title: "Terms of Service",
   description: "Terms of Service for the iScaleXchange platform",
@@ -109,12 +111,12 @@ export default function TermsOfServicePage() {
               </p>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-4 p-6">
                 <img
-                  src="/images/badges/powered-by-light.svg"
+                  src={appPath("/images/badges/powered-by-light.svg")}
                   alt="Powered by Open-Launch - Light Theme"
                   className="h-11 w-auto"
                 />
                 <img
-                  src="/images/badges/powered-by-dark.svg"
+                  src={appPath("/images/badges/powered-by-dark.svg")}
                   alt="Powered by Open-Launch - Dark Theme"
                   className="h-11 w-auto"
                 />
