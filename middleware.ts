@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 
-import { BASE_PATH } from "@/lib/base-path"
+import { appPath, BASE_PATH } from "@/lib/base-path"
 
 // DECISION 3: browsing/search/viewing tools + profiles is fully PUBLIC.
 // Only a small set of routes require an authenticated user. Everything else
@@ -29,7 +29,7 @@ export default clerkMiddleware(async (auth, request) => {
         process.env.NEXT_PUBLIC_URL ?? "https://www.iscalelabs.com/iscalexchange",
       ).origin
       const returnBackUrl = new URL(
-        `${request.nextUrl.pathname}${request.nextUrl.search}`,
+        `${appPath(request.nextUrl.pathname)}${request.nextUrl.search}`,
         publicOrigin,
       )
 
