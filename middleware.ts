@@ -16,27 +16,35 @@ const isProtectedRoute = createRouteMatcher([
   `${BASE_PATH}/projects/submit/:path*`,
 ])
 
-export default clerkMiddleware(async (auth, request) => {
-  if (isProtectedRoute(request)) {
-    // Redirect signed-out users to the Clerk sign-in page and return them back
-    // after auth, instead of Clerk's default 404 for protected pages.
-    const { userId, redirectToSignIn } = await auth()
-    if (!userId) {
-      // This app is served through a multi-zone rewrite. request.url therefore
-      // uses the private zone hostname; never expose that as Clerk's post-login
-      // destination. Rebuild the same path on the configured public origin.
-      const publicOrigin = new URL(
-        process.env.NEXT_PUBLIC_URL ?? "https://www.iscalelabs.com/iscalexchange",
-      ).origin
-      const returnBackUrl = new URL(
-        `${appPath(request.nextUrl.pathname)}${request.nextUrl.search}`,
-        publicOrigin,
-      )
+export default clerkMiddleware(
+  async (auth, request) => {
+    if (isProtectedRoute(request)) {
+      // Redirect signed-out users to the Clerk sign-in page and return them back
+      // after auth, instead of Clerk's default 404 for protected pages.
+      const { userId, redirectToSignIn } = await auth()
+      if (!userId) {
+        // This app is served through a multi-zone rewrite. request.url therefore
+        // uses the private zone hostname; never expose that as Clerk's post-login
+        // destination. Rebuild the same path on the configured public origin.
+        const publicOrigin = new URL(
+          process.env.NEXT_PUBLIC_URL ?? "https://www.iscalelabs.com/iscalexchange",
+        ).origin
+        const returnBackUrl = new URL(
+          `${appPath(request.nextUrl.pathname)}${request.nextUrl.search}`,
+          publicOrigin,
+        )
 
-      return redirectToSignIn({ returnBackUrl })
+        return redirectToSignIn({ returnBackUrl })
+      }
     }
-  }
-})
+  },
+  {
+    frontendApiProxy: {
+      enabled: true,
+      path: appPath("/__clerk"),
+    },
+  },
+)
 
 export const config = {
   matcher: [
