@@ -65,7 +65,7 @@ export default function RootLayout({
     <ClerkProvider
       signInUrl={appPath("/sign-in")}
       signUpUrl={appPath("/sign-up")}
-      proxyUrl={appPath("/__clerk")}
+      proxyUrl="https://clerk.iscalelabs.com"
       signInFallbackRedirectUrl={appPath("/")}
       signUpFallbackRedirectUrl={appPath("/")}
       afterSignOutUrl={appPath("/")}
