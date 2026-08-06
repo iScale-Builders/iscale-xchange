@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Space_Grotesk as FontHeading, Inter as FontSans } from "next/font/google"
 
 import { ClerkProvider } from "@clerk/nextjs"
-import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 
 import { appPath } from "@/lib/base-path"
@@ -66,6 +65,7 @@ export default function RootLayout({
     <ClerkProvider
       signInUrl={appPath("/sign-in")}
       signUpUrl={appPath("/sign-up")}
+      proxyUrl={appPath("/__clerk")}
       signInFallbackRedirectUrl={appPath("/")}
       signUpFallbackRedirectUrl={appPath("/")}
       afterSignOutUrl={appPath("/")}
@@ -92,7 +92,6 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
           <Toaster />
-          <Analytics />
           <PageTracker />
         </body>
       </html>
