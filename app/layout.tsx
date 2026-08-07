@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Space_Grotesk as FontHeading, Inter as FontSans } from "next/font/google"
 
 import { ClerkProvider } from "@clerk/nextjs"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner"
 
 import { appPath } from "@/lib/base-path"
@@ -33,6 +35,7 @@ const fontHeading = FontHeading({
 })
 
 const appUrl = process.env.NEXT_PUBLIC_URL || "https://iscalexchange.com"
+const analyticsOrigin = "https://www.iscalelabs.com"
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -93,6 +96,15 @@ export default function RootLayout({
           </ThemeProvider>
           <Toaster />
           <PageTracker />
+          <Analytics
+            scriptSrc={`${analyticsOrigin}/_vercel/insights/script.js`}
+            viewEndpoint={`${analyticsOrigin}/_vercel/insights/view`}
+            eventEndpoint={`${analyticsOrigin}/_vercel/insights/event`}
+          />
+          <SpeedInsights
+            scriptSrc={`${analyticsOrigin}/_vercel/speed-insights/script.js`}
+            endpoint={`${analyticsOrigin}/_vercel/speed-insights/vitals`}
+          />
         </body>
       </html>
     </ClerkProvider>
